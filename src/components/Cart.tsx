@@ -2,6 +2,30 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useCartContext } from "../context/useCartContext";
+import fallbackImage from "../assets/hero.png";
+
+type CartItemImageProps = {
+  src: string;
+  alt: string;
+};
+
+const CartItemImage: React.FC<CartItemImageProps> = ({ src, alt }) => {
+  const [imageSrc, setImageSrc] = useState(src);
+
+  return (
+    <img
+      src={imageSrc}
+      alt={alt}
+      className="img-fluid"
+      style={{ maxHeight: 120 }}
+      onError={() => {
+        if (imageSrc !== fallbackImage) {
+          setImageSrc(fallbackImage);
+        }
+      }}
+    />
+  );
+};
 
 const Cart: React.FC = () => {
   const navigate = useNavigate();
@@ -55,7 +79,7 @@ const Cart: React.FC = () => {
             <div key={item.id} className="card p-3 shadow-sm">
               <div className="row g-3 align-items-center">
                 <div className="col-md-2 text-center">
-                  <img src={item.image} alt={item.title} className="img-fluid" style={{ maxHeight: 120 }} />
+                  <CartItemImage key={item.id} src={item.image} alt={item.title} />
                 </div>
                 <div className="col-md-8">
                   <h5 className="mb-1">{item.title}</h5>

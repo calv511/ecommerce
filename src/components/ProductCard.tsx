@@ -2,10 +2,12 @@ import type { Product } from "../types/types"
 import { Rating } from '@smastrom/react-rating';
 import { useEffect, useState } from "react";
 import { useCartContext } from "../context/useCartContext";
+import fallbackImage from "../assets/hero.png";
 
 const ProductCard:React.FC<{product: Product}> = ({product}) => {
   const { addToCart } = useCartContext();
   const [isAdded, setIsAdded] = useState(false);
+  const [imageSrc, setImageSrc] = useState(product.image);
 
   useEffect(() => {
     if (!isAdded) {
@@ -25,7 +27,17 @@ const ProductCard:React.FC<{product: Product}> = ({product}) => {
   return (
     <div className="col-md-5 p-3 d-flex flex-column align-items-center gap-3 shadow">
         <h3>{product.title}</h3>
-        <img src={product.image} alt={product.title} className="w-25"/>
+        <img
+          key={product.id}
+          src={imageSrc}
+          alt={product.title}
+          className="w-25"
+          onError={() => {
+            if (imageSrc !== fallbackImage) {
+              setImageSrc(fallbackImage);
+            }
+          }}
+        />
         <p>${product.price}</p>
         <h5>{product.category.toUpperCase()}</h5>
         <Rating style={{ maxWidth: 150 }} value={product.rating.rate} readOnly/>
