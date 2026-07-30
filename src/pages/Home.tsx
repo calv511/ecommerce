@@ -6,12 +6,13 @@ import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { fetchCategories, fetchProducts, fetchProductsByCategory } from "../api/api";
 import { useEffect } from "react";
-import { useCartContext } from "../context/useCartContext";
+import { useSelector } from "react-redux";
+import type { RootState } from "../app/store";
 
 const Home:React.FC = () => {
     const navigate = useNavigate();
     const { products, dispatch, selectedCategory } = useProductContext();
-    const { items } = useCartContext();
+    const items = useSelector((state: RootState) => state.cart.items);
 
     const { data: allProductsData } = useQuery({
         queryKey: ['products'],

@@ -1,6 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import cartReducer, { type CartState } from "../features/cart/cartSlice";
-import { CART_STORAGE_KEY } from "../context/cartStore";
+
+export const CART_STORAGE_KEY = "shopping-cart";
 
 const loadCartFromSessionStorage = (): CartState => {
   if (typeof window === "undefined") {

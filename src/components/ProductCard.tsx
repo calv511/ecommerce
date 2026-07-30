@@ -1,11 +1,13 @@
 import type { Product } from "../types/types"
 import { Rating } from '@smastrom/react-rating';
 import { useEffect, useState } from "react";
-import { useCartContext } from "../context/useCartContext";
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "../app/store";
+import { addToCart } from "../features/cart/cartSlice";
 import fallbackImage from "../assets/hero.png";
 
 const ProductCard:React.FC<{product: Product}> = ({product}) => {
-  const { addToCart } = useCartContext();
+  const dispatch = useDispatch<AppDispatch>();
   const [isAdded, setIsAdded] = useState(false);
   const [imageSrc, setImageSrc] = useState(product.image);
 
@@ -20,7 +22,7 @@ const ProductCard:React.FC<{product: Product}> = ({product}) => {
   }, [isAdded]);
 
   const handleAddToCart = () => {
-    addToCart(product);
+    dispatch(addToCart(product));
     setIsAdded(true);
   };
 

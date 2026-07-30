@@ -1,7 +1,9 @@
 
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { useCartContext } from "../context/useCartContext";
+import { useSelector, useDispatch } from "react-redux";
+import type { RootState, AppDispatch } from "../app/store";
+import { removeFromCart, setQuantity, clearCart } from "../features/cart/cartSlice";
 import fallbackImage from "../assets/hero.png";
 
 type CartItemImageProps = {
@@ -29,13 +31,14 @@ const CartItemImage: React.FC<CartItemImageProps> = ({ src, alt }) => {
 
 const Cart: React.FC = () => {
   const navigate = useNavigate();
-  const { items, removeFromCart, setQuantity, clearCart } = useCartContext();
+  const items = useSelector((state: RootState) => state.cart.items);
+  const dispatch = useDispatch<AppDispatch>();
   const [checkoutMessage, setCheckoutMessage] = useState("");
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
   const totalPrice = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   const handleCheckout = () => {
-    clearCart();
+    dispatch(clearCart());
     setCheckoutMessage("Checkout successful. Your cart has been cleared.");
   };
 
@@ -96,13 +99,13 @@ const Cart: React.FC = () => {
                     onChange={(event) => {
                       const nextQuantity = Number(event.target.value);
                       if (!Number.isNaN(nextQuantity)) {
-                        setQuantity(item.id, nextQuantity);
+                        dispatch(setQuantity({ id: item.id, quantity: nextQuantity }));
                       }
                     }}
                   />
                 </div>
                 <div className="col-md-2 text-md-end">
-                  <button className="btn btn-outline-danger" onClick={() => removeFromCart(item.id)}>
+                  <button className="btn btn-outline-danger" onClick={() => dispatch(removeFromCart(item.id))}>
                     Remove
                   </button>
                 </div>
