@@ -1,8 +1,10 @@
 
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useCartContext } from "../context/useCartContext";
 
 const Cart: React.FC = () => {
+  const navigate = useNavigate();
   const { items, removeFromCart, clearCart } = useCartContext();
   const [checkoutMessage, setCheckoutMessage] = useState("");
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
@@ -15,7 +17,12 @@ const Cart: React.FC = () => {
 
   return (
     <div className="container py-4">
-      <h2 className="mb-4">Shopping Cart</h2>
+      <div className="d-flex align-items-center justify-content-between gap-3 mb-4 flex-wrap">
+        <h2 className="mb-0">Shopping Cart</h2>
+        <button className="btn btn-outline-primary" onClick={() => navigate("/")}>
+          Back Home
+        </button>
+      </div>
       {checkoutMessage ? (
         <div className="alert alert-success" role="alert">
           {checkoutMessage}
