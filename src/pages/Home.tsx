@@ -6,12 +6,14 @@ import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { fetchProducts, fetchCategories } from "../api/api";
 import { useEffect } from "react";
+import { useCartContext } from "../context/CartContext";
 
 const Home:React.FC = () => {
     const navigate = useNavigate()
     const {products, dispatch, selectedCategory} = useProductContext()
+    const { items } = useCartContext();
 
-    const { data: productsData, isLoading } = useQuery({
+    const { data: productsData } = useQuery({
         queryKey:['products'],
         queryFn: fetchProducts,
     });
@@ -56,6 +58,7 @@ const Home:React.FC = () => {
             Clear Filter
         </button>
         <button onClick={()=>navigate('/profile')}>Go to Profile Page</button>
+        <button onClick={()=>navigate('/cart')}>Go to Cart ({items.length})</button>
     <div className="d-flex flex-wrap gap-5 justify-content-center">
         {filteredProducts.map((product: Product)=>(
             <ProductCard product={product} key={product.id}/>

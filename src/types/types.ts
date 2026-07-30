@@ -11,4 +11,8 @@ export interface Product {
         }
     }
 
-    export type Category = string;
+export interface CartItem extends Product {
+    quantity: number;
+}
+
+export type Category = string;
