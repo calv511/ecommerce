@@ -1,73 +1,112 @@
-# React + TypeScript + Vite
+# E-Commerce App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A single-page e-commerce storefront built with React, TypeScript, and Vite. Products are pulled live from the [Fake Store API](https://fakestoreapi.com), and the shopping cart is managed with Redux Toolkit and persisted in `sessionStorage`.
 
-Currently, two official plugins are available:
+## Table of Contents
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Prerequisites](#prerequisites)
+- [Getting Started](#getting-started)
+- [Available Scripts](#available-scripts)
+- [Project Structure](#project-structure)
+- [Routes](#routes)
+- [Data Source](#data-source)
 
-## React Compiler
+## Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Product Catalog
+- Fetches all products from the API using React Query and displays them on the home page.
+- Each product card shows title, price, category, description, star rating, and image.
+- Images that fail to load (a known issue with some Fake Store API image URLs) automatically fall back to a placeholder so the layout never breaks.
+- A category dropdown is populated dynamically from the API — nothing is hardcoded. Selecting a category re-queries the category-specific endpoint and shows only matching products.
 
-## Expanding the ESLint configuration
+### Shopping Cart
+- State is managed globally with Redux Toolkit (`cartSlice` + `configureStore`).
+- Add a product to the cart directly from the home page listing.
+- View, adjust quantity, or remove any item from the dedicated Cart page.
+- Cart contents persist in `sessionStorage`, so they survive page refreshes and are shared across the app for the duration of the browser session.
+- Running total item count and total price update live as the cart changes.
+- A simulated checkout clears the cart (Redux state + `sessionStorage`) and shows a success message.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Tech Stack
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+| Category         | Library                                   |
+|-------------------|-------------------------------------------|
+| UI                | React 19, React Bootstrap, Bootstrap 5    |
+| Language          | TypeScript                                |
+| Build tool        | Vite                                      |
+| Data fetching     | TanStack React Query, Axios               |
+| State management  | Redux Toolkit, React Redux                |
+| Routing           | React Router                              |
+| Ratings widget    | @smastrom/react-rating                    |
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## Prerequisites
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- [Node.js](https://nodejs.org/) 18 or later
+- npm (comes bundled with Node.js)
+
+## Getting Started
+
+1. Clone the repository and move into the project folder:
+
+   ```bash
+   git clone <repository-url>
+   cd ecommerce
+   ```
+
+2. Install dependencies:
+
+   ```bash
+   npm install
+   ```
+
+3. Start the development server:
+
+   ```bash
+   npm run dev
+   ```
+
+4. Open the URL Vite prints in the terminal (typically [http://localhost:5173](http://localhost:5173)) in your browser.
+
+No environment variables or API keys are required — the app talks directly to the public Fake Store API.
+
+## Available Scripts
+
+| Command           | Description                                          |
+|--------------------|------------------------------------------------------|
+| `npm run dev`      | Starts the Vite dev server with hot module reload.    |
+| `npm run build`    | Type-checks the project and builds it for production. |
+| `npm run preview`  | Serves the production build locally to sanity-check it. |
+| `npm run lint`     | Runs ESLint across the codebase.                      |
+
+## Project Structure
+
+```
+src/
+├── api/               # Axios client and API request functions
+├── app/               # Redux store configuration
+├── components/        # ProductCard, Cart, and other UI components
+├── context/           # React Context for product/category state
+├── features/cart/     # Redux Toolkit cart slice (actions + reducer)
+├── pages/              # Route-level pages (Home, Profile, Cart)
+└── types/              # Shared TypeScript types
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Routes
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+| Path       | Page                                             |
+|------------|---------------------------------------------------|
+| `/`        | Home — product catalog, category filter, add to cart |
+| `/cart`    | Shopping cart — view, edit, remove items, checkout |
+| `/profile` | Simple profile page listing loaded products       |
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## Data Source
+
+All product and category data comes from the [Fake Store API](https://fakestoreapi.com):
+
+- `GET /products` — all products
+- `GET /products/categories` — list of available categories
+- `GET /products/category/{category}` — products in a specific category
+
+The Fake Store API is a free testing API; it does not process real orders, which is why checkout is simulated locally.
