@@ -3,10 +3,22 @@ import { useCartContext } from "../context/useCartContext";
 
 const Cart: React.FC = () => {
   const { items, removeFromCart } = useCartContext();
+  const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
+  const totalPrice = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   return (
     <div className="container py-4">
       <h2 className="mb-4">Shopping Cart</h2>
+      <div className="card p-3 mb-4 shadow-sm bg-light">
+        <div className="row g-3">
+          <div className="col-md-6">
+            <strong>Total products:</strong> {totalItems}
+          </div>
+          <div className="col-md-6 text-md-end">
+            <strong>Total price:</strong> ${totalPrice.toFixed(2)}
+          </div>
+        </div>
+      </div>
       {items.length === 0 ? (
         <p>Your cart is empty.</p>
       ) : (
