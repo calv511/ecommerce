@@ -4,48 +4,48 @@ import ProductCard from "../components/ProductCard";
 import { useProductContext } from "../context/ProductContext";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { fetchProducts, fetchCategories } from "../api/api";
+import { fetchCategories, fetchProducts, fetchProductsByCategory } from "../api/api";
 import { useEffect } from "react";
 import { useCartContext } from "../context/useCartContext";
 
 const Home:React.FC = () => {
-    const navigate = useNavigate()
-    const {products, dispatch, selectedCategory} = useProductContext()
+    const navigate = useNavigate();
+    const { products, dispatch, selectedCategory } = useProductContext();
     const { items } = useCartContext();
 
-    const { data: productsData } = useQuery({
-        queryKey:['products'],
+    const { data: allProductsData } = useQuery({
+        queryKey: ['products'],
         queryFn: fetchProducts,
     });
 
-    useEffect(() => {
-        if(productsData)
-        dispatch({ type:'SET_PRODUCTS', payload: productsData?.data })
-    },[dispatch, productsData])
+    const { data: categoryProductsData } = useQuery({
+        queryKey: ['products', selectedCategory],
+        queryFn: () => fetchProductsByCategory(selectedCategory),
+        enabled: Boolean(selectedCategory),
+    });
 
-        const { data: categories } = useQuery({
-        queryKey:['categories'],
+    useEffect(() => {
+        if (allProductsData) {
+            dispatch({ type: 'SET_PRODUCTS', payload: allProductsData.data });
+        }
+    }, [dispatch, allProductsData]);
+
+    const { data: categories } = useQuery({
+        queryKey: ['categories'],
         queryFn: fetchCategories,
     });
 
-    console.log(categories);
-
-    const getFilteredProducts = () => {
-        if(selectedCategory){
-            return products.filter((product:Product)=> product.category === selectedCategory);
-        }
-        return products;
-    };
-
-    const filteredProducts = getFilteredProducts();
+    const filteredProducts = selectedCategory
+        ? (categoryProductsData?.data ?? [])
+        : products;
 
   return (
     <div>
-        <select onChange={(e) => 
-            dispatch({type:"SET_SELECTED_CATEGORY", payload: e.target.value})
-                }
-                value={selectedCategory}
-            >
+        <select onChange={(e) =>
+            dispatch({ type: "SET_SELECTED_CATEGORY", payload: e.target.value })
+        }
+            value={selectedCategory}
+        >
         <option value=''>All Categories</option>
         {categories?.data.map((category: Category) => (
             <option value={category} key={category}>{category}</option>
