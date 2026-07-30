@@ -67,6 +67,11 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
                 ...state,
                 items: state.items.filter((item) => item.id !== action.payload),
             };
+        case "CLEAR_CART":
+            return {
+                ...state,
+                items: [],
+            };
         default:
             return state;
     }
@@ -80,6 +85,11 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
     const [state, dispatch] = useReducer(cartReducer, undefined, loadCartFromSessionStorage);
 
     useEffect(() => {
+        if (state.items.length === 0) {
+            window.sessionStorage.removeItem(CART_STORAGE_KEY);
+            return;
+        }
+
         window.sessionStorage.setItem(CART_STORAGE_KEY, JSON.stringify(state.items));
     }, [state.items]);
 
@@ -87,6 +97,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
         items: state.items,
         addToCart: (product) => dispatch({ type: "ADD_TO_CART", payload: product }),
         removeFromCart: (id) => dispatch({ type: "REMOVE_FROM_CART", payload: id }),
+        clearCart: () => dispatch({ type: "CLEAR_CART" }),
     };
 
     return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

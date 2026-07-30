@@ -1,14 +1,26 @@
 
+import { useState } from "react";
 import { useCartContext } from "../context/useCartContext";
 
 const Cart: React.FC = () => {
-  const { items, removeFromCart } = useCartContext();
+  const { items, removeFromCart, clearCart } = useCartContext();
+  const [checkoutMessage, setCheckoutMessage] = useState("");
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
   const totalPrice = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+  const handleCheckout = () => {
+    clearCart();
+    setCheckoutMessage("Checkout successful. Your cart has been cleared.");
+  };
 
   return (
     <div className="container py-4">
       <h2 className="mb-4">Shopping Cart</h2>
+      {checkoutMessage ? (
+        <div className="alert alert-success" role="alert">
+          {checkoutMessage}
+        </div>
+      ) : null}
       <div className="card p-3 mb-4 shadow-sm bg-light">
         <div className="row g-3">
           <div className="col-md-6">
@@ -17,6 +29,15 @@ const Cart: React.FC = () => {
           <div className="col-md-6 text-md-end">
             <strong>Total price:</strong> ${totalPrice.toFixed(2)}
           </div>
+        </div>
+        <div className="mt-3 text-md-end">
+          <button
+            className="btn btn-success"
+            onClick={handleCheckout}
+            disabled={items.length === 0}
+          >
+            Checkout
+          </button>
         </div>
       </div>
       {items.length === 0 ? (

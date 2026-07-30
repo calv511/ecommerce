@@ -9,12 +9,14 @@ export interface CartState {
 
 export type CartAction =
     | { type: "ADD_TO_CART"; payload: Product }
-    | { type: "REMOVE_FROM_CART"; payload: number };
+    | { type: "REMOVE_FROM_CART"; payload: number }
+    | { type: "CLEAR_CART" };
 
 export interface CartContextType {
     items: CartItem[];
     addToCart: (product: Product) => void;
     removeFromCart: (id: number) => void;
+    clearCart: () => void;
 }
 
 export const CartContext = createContext<CartContextType | undefined>(undefined);
