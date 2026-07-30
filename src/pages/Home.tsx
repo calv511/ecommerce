@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { fetchProducts, fetchCategories } from "../api/api";
 import { useEffect } from "react";
-import { useCartContext } from "../context/CartContext";
+import { useCartContext } from "../context/useCartContext";
 
 const Home:React.FC = () => {
     const navigate = useNavigate()

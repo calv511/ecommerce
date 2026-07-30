@@ -1,17 +1,42 @@
-import { createContext, useContext, useReducer } from "react";
+import { useEffect, useReducer } from "react";
 import type { ReactNode } from "react";
-import type { CartItem, Product } from "../types/types";
-
-type CartAction =
-    | { type: "ADD_TO_CART"; payload: Product }
-    | { type: "REMOVE_FROM_CART"; payload: number };
-
-interface CartState {
-    items: CartItem[];
-}
+import {
+    CART_STORAGE_KEY,
+    CartContext,
+    type CartAction,
+    type CartContextType,
+    type CartState,
+} from "./cartStore";
+import type { CartItem } from "../types/types";
 
 const initialState: CartState = {
     items: [],
+};
+
+const loadCartFromSessionStorage = (): CartState => {
+    if (typeof window === "undefined") {
+        return initialState;
+    }
+
+    const storedCart = window.sessionStorage.getItem(CART_STORAGE_KEY);
+
+    if (!storedCart) {
+        return initialState;
+    }
+
+    try {
+        const parsedCart = JSON.parse(storedCart) as CartItem[];
+
+        if (!Array.isArray(parsedCart)) {
+            return initialState;
+        }
+
+        return {
+            items: parsedCart,
+        };
+    } catch {
+        return initialState;
+    }
 };
 
 const cartReducer = (state: CartState, action: CartAction): CartState => {
@@ -47,20 +72,16 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
     }
 };
 
-interface CartContextType {
-    items: CartItem[];
-    addToCart: (product: Product) => void;
-    removeFromCart: (id: number) => void;
-}
-
-const CartContext = createContext<CartContextType | undefined>(undefined);
-
 interface CartProviderProps {
     children: ReactNode;
 }
 
 export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
-    const [state, dispatch] = useReducer(cartReducer, initialState);
+    const [state, dispatch] = useReducer(cartReducer, undefined, loadCartFromSessionStorage);
+
+    useEffect(() => {
+        window.sessionStorage.setItem(CART_STORAGE_KEY, JSON.stringify(state.items));
+    }, [state.items]);
 
     const value: CartContextType = {
         items: state.items,
@@ -69,14 +90,4 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
     };
 
     return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
-};
-
-export const useCartContext = (): CartContextType => {
-    const context = useContext(CartContext);
-
-    if (!context) {
-        throw new Error("useCartContext must be used within a CartProvider");
-    }
-
-    return context;
 };

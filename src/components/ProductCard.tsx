@@ -1,6 +1,6 @@
 import type { Product } from "../types/types"
 import { Rating } from '@smastrom/react-rating';
-import { useCartContext } from "../context/CartContext";
+import { useCartContext } from "../context/useCartContext";
 
 const ProductCard:React.FC<{product: Product}> = ({product}) => {
   const { addToCart } = useCartContext();
