@@ -67,6 +67,17 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
                 ...state,
                 items: state.items.filter((item) => item.id !== action.payload),
             };
+        case "SET_QUANTITY":
+            return {
+                ...state,
+                items: action.payload.quantity <= 0
+                    ? state.items.filter((item) => item.id !== action.payload.id)
+                    : state.items.map((item) =>
+                        item.id === action.payload.id
+                            ? { ...item, quantity: action.payload.quantity }
+                            : item,
+                    ),
+            };
         case "CLEAR_CART":
             return {
                 ...state,
@@ -97,6 +108,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
         items: state.items,
         addToCart: (product) => dispatch({ type: "ADD_TO_CART", payload: product }),
         removeFromCart: (id) => dispatch({ type: "REMOVE_FROM_CART", payload: id }),
+        setQuantity: (id, quantity) => dispatch({ type: "SET_QUANTITY", payload: { id, quantity } }),
         clearCart: () => dispatch({ type: "CLEAR_CART" }),
     };
 

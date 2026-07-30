@@ -5,7 +5,7 @@ import { useCartContext } from "../context/useCartContext";
 
 const Cart: React.FC = () => {
   const navigate = useNavigate();
-  const { items, removeFromCart, clearCart } = useCartContext();
+  const { items, removeFromCart, setQuantity, clearCart } = useCartContext();
   const [checkoutMessage, setCheckoutMessage] = useState("");
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
   const totalPrice = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
@@ -60,7 +60,22 @@ const Cart: React.FC = () => {
                 <div className="col-md-8">
                   <h5 className="mb-1">{item.title}</h5>
                   <p className="mb-1">Price: ${item.price}</p>
-                  <p className="mb-0">Count: {item.quantity}</p>
+                  <label className="form-label mb-1" htmlFor={`quantity-${item.id}`}>
+                    Quantity
+                  </label>
+                  <input
+                    id={`quantity-${item.id}`}
+                    type="number"
+                    min="1"
+                    className="form-control w-auto"
+                    value={item.quantity}
+                    onChange={(event) => {
+                      const nextQuantity = Number(event.target.value);
+                      if (!Number.isNaN(nextQuantity)) {
+                        setQuantity(item.id, nextQuantity);
+                      }
+                    }}
+                  />
                 </div>
                 <div className="col-md-2 text-md-end">
                   <button className="btn btn-outline-danger" onClick={() => removeFromCart(item.id)}>
