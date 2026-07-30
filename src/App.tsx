@@ -4,25 +4,28 @@ import Profile from "./pages/Profile";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { ProductProvider } from './context/ProductContext';
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { CartProvider } from "./context/CartContext";
+import { Provider } from "react-redux";
+import { store } from "./app/store";
 import Cart from "./components/Cart";
+
 function App() {
-  const client = new QueryClient()
+  const client = new QueryClient();
+
   return (
     <QueryClientProvider client={client}>
-    <ProductProvider>
-    <CartProvider>
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home/>}/>
-        <Route path="/profile" element={<Profile/>}/>
-        <Route path="/cart" element={<Cart/>}/>
-      </Routes>
-    </BrowserRouter>
-    </CartProvider>
-    </ProductProvider>
+      <Provider store={store}>
+        <ProductProvider>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/cart" element={<Cart />} />
+            </Routes>
+          </BrowserRouter>
+        </ProductProvider>
+      </Provider>
     </QueryClientProvider>
-  )
+  );
 }
 
 export default App
