@@ -2,7 +2,7 @@
 
 A single-page e-commerce storefront built with React, TypeScript, and Vite. Products are pulled live from the [Fake Store API](https://fakestoreapi.com), and the shopping cart is managed with Redux Toolkit and persisted in `sessionStorage`.
 
-**Live demo:** _add your deployed URL here_
+**Live demo:** https://ecommerce-seven-delta-83.vercel.app
 
 ![Storefront product catalog](docs/screenshot.png)
 
@@ -20,12 +20,14 @@ A single-page e-commerce storefront built with React, TypeScript, and Vite. Prod
 ## Features
 
 ### Product Catalog
+
 - Fetches all products from the API using React Query and displays them on the home page.
 - Each product card shows title, price, category, description, star rating, and image.
 - Images that fail to load (a known issue with some Fake Store API image URLs) automatically fall back to a placeholder so the layout never breaks.
 - A category dropdown is populated dynamically from the API — nothing is hardcoded. Selecting a category re-queries the category-specific endpoint and shows only matching products.
 
 ### Shopping Cart
+
 - State is managed globally with Redux Toolkit (`cartSlice` + `configureStore`).
 - Add a product to the cart directly from the home page listing.
 - View, adjust quantity, or remove any item from the dedicated Cart page.
@@ -35,15 +37,15 @@ A single-page e-commerce storefront built with React, TypeScript, and Vite. Prod
 
 ## Tech Stack
 
-| Category         | Library                                   |
-|-------------------|-------------------------------------------|
-| UI                | React 19, React Bootstrap, Bootstrap 5    |
-| Language          | TypeScript                                |
-| Build tool        | Vite                                      |
-| Data fetching     | TanStack React Query, Axios               |
-| State management  | Redux Toolkit, React Redux                |
-| Routing           | React Router                              |
-| Ratings widget    | @smastrom/react-rating                    |
+| Category         | Library                                |
+| ---------------- | -------------------------------------- |
+| UI               | React 19, React Bootstrap, Bootstrap 5 |
+| Language         | TypeScript                             |
+| Build tool       | Vite                                   |
+| Data fetching    | TanStack React Query, Axios            |
+| State management | Redux Toolkit, React Redux             |
+| Routing          | React Router                           |
+| Ratings widget   | @smastrom/react-rating                 |
 
 ## Prerequisites
 
@@ -77,12 +79,12 @@ No environment variables or API keys are required — the app talks directly to 
 
 ## Available Scripts
 
-| Command           | Description                                          |
-|--------------------|------------------------------------------------------|
-| `npm run dev`      | Starts the Vite dev server with hot module reload.    |
-| `npm run build`    | Type-checks the project and builds it for production. |
-| `npm run preview`  | Serves the production build locally to sanity-check it. |
-| `npm run lint`     | Runs ESLint across the codebase.                      |
+| Command           | Description                                             |
+| ----------------- | ------------------------------------------------------- |
+| `npm run dev`     | Starts the Vite dev server with hot module reload.      |
+| `npm run build`   | Type-checks the project and builds it for production.   |
+| `npm run preview` | Serves the production build locally to sanity-check it. |
+| `npm run lint`    | Runs ESLint across the codebase.                        |
 
 ## Project Structure
 
@@ -99,11 +101,11 @@ src/
 
 ## Routes
 
-| Path       | Page                                             |
-|------------|---------------------------------------------------|
+| Path       | Page                                                 |
+| ---------- | ---------------------------------------------------- |
 | `/`        | Home — product catalog, category filter, add to cart |
-| `/cart`    | Shopping cart — view, edit, remove items, checkout |
-| `/profile` | Simple profile page listing loaded products       |
+| `/cart`    | Shopping cart — view, edit, remove items, checkout   |
+| `/profile` | Simple profile page listing loaded products          |
 
 ## Deployment
 
