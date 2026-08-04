@@ -2,6 +2,10 @@
 
 A single-page e-commerce storefront built with React, TypeScript, and Vite. Products are pulled live from the [Fake Store API](https://fakestoreapi.com), and the shopping cart is managed with Redux Toolkit and persisted in `sessionStorage`.
 
+**Live demo:** _add your deployed URL here_
+
+![Storefront product catalog](docs/screenshot.png)
+
 ## Table of Contents
 
 - [Features](#features)
@@ -100,6 +104,13 @@ src/
 | `/`        | Home — product catalog, category filter, add to cart |
 | `/cart`    | Shopping cart — view, edit, remove items, checkout |
 | `/profile` | Simple profile page listing loaded products       |
+
+## Deployment
+
+The app is a static Vite build, so it deploys to Vercel or Netlify with no server. `vercel.json` and `netlify.toml` are included and already rewrite all paths to `index.html`, so `/cart` and `/profile` survive a direct visit or a refresh instead of returning a 404.
+
+- Build command: `npm run build`
+- Publish directory: `dist`
 
 ## Data Source
 
