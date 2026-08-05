@@ -1,15 +1,9 @@
-import { useProductContext } from "../context/ProductContext"
-import type { Product } from "../types/types"
-
-const Profile:React.FC = () => {
-  const { products } = useProductContext()
+const Profile: React.FC = () => {
   return (
     <div>
-      {products.map((product:Product)=>(
-        <h1>{product.title}</h1>
-      ))}
+      <h1>Profile</h1> // todo
     </div>
-  )
-}
+  );
+};
 
-export default Profile
+export default Profile;
