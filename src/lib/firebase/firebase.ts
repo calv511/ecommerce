@@ -11,10 +11,12 @@ import {
 
 // Your Firebase configuration
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
+  apiKey: "AIzaSyAyGrA5FpYzZ7tlzmulkYkCseNTcTlinSs",
   authDomain: "ecommerce-demo-63841.firebaseapp.com",
   projectId: "ecommerce-demo-63841",
-  appId: "YOUR_APP_ID"
+  storageBucket: "ecommerce-demo-63841.firebasestorage.app",
+  messagingSenderId: "293111462630",
+  appId: "1:293111462630:web:b970cc94bc11d1e230d927"
 };
 
 // Initialize Firebase and Authentication services
