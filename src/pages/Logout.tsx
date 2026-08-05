@@ -1,7 +1,13 @@
-const Logout = () => {
-  return (
-    <div>Logout</div>
-  )
-}
+import { useEffect } from "react";
+import { signOut } from "firebase/auth";
+import { auth } from "../lib/firebase/firebase";
 
-export default Logout
+const Logout = () => {
+  useEffect(() => {
+    signOut(auth);
+  }, []);
+
+  return <div>Logged out</div>;
+};
+
+export default Logout;
