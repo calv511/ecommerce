@@ -8,6 +8,9 @@ import { Provider } from "react-redux";
 import { store } from "./app/store";
 import Cart from "./components/Cart";
 import { AuthProvider } from "./context/AuthContext";
+import Register from "./pages/Register";
+import Login from "./pages/Login";
+import Logout from "./pages/Logout";
 
 function App() {
   const client = new QueryClient();
@@ -22,6 +25,9 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/cart" element={<Cart />} />
+              <Route path="/Login" element={<Login />} />
+              <Route path="/Register" element={<Register />} />
+              <Route path="/Logout" element={<Logout />} />
             </Routes>
           </BrowserRouter>
           </AuthProvider>
