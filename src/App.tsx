@@ -11,6 +11,7 @@ import { AuthProvider } from "./context/AuthContext";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Logout from "./pages/Logout";
+import Navbar from "./components/Navbar";
 
 function App() {
   const client = new QueryClient();
@@ -21,6 +22,7 @@ function App() {
         <ProductProvider>
           <AuthProvider>
           <BrowserRouter>
+          <Navbar />
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/profile" element={<Profile />} />
