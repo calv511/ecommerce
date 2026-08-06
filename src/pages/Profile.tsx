@@ -10,6 +10,38 @@ const Profile: React.FC = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   
+  // Handle profile update submission
+  const handleUpdateProfile = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setError('');
+    setSuccess('');
+    if (!user) {
+      setError('User not found');
+      return;
+    }
+    try {
+      await updateProfile(user, {
+        displayName: displayName,
+      });
+      setSuccess('Profile updated succesfully');
+    } catch (error: any) {
+      setError(error.message);
+    }
+  }
+
+  const handleDeleteAccount = async () => {
+    try {
+      if (!user) {
+        setError('User not found')
+        return;
+      }
+      await deleteUser(user);
+      setSuccess('Account deleted successfully');
+    } catch (error: any) {
+      setError(error.message);
+    }
+  };
+
   return (
     <div style={styles.form}>
       <h1>Profile</h1>
