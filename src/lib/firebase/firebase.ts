@@ -35,11 +35,11 @@ onAuthStateChanged(auth, (user) => {
 });
 
 // 2. Sign In with Email and Password
-export async function loginUser(email, password) {
+export async function loginUser(email: string, password: string) {
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     return userCredential.user;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Login failed:", error.message);
     throw error;
   }
@@ -50,7 +50,7 @@ export async function loginAnonymously() {
   try {
     const userCredential = await signInAnonymously(auth);
     return userCredential.user;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Anonymous login failed:", error.message);
     throw error;
   }
@@ -62,7 +62,7 @@ export async function loginWithGoogle() {
   try {
     const userCredential = await signInWithPopup(auth, provider);
     return userCredential.user;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Google login failed:", error.message);
     throw error;
   }
@@ -72,7 +72,7 @@ export async function loginWithGoogle() {
 export async function logoutUser() {
   try {
     await signOut(auth);
-  } catch (error) {
+  } catch (error: any) {
     console.error("Logout failed:", error.message);
   }
 }

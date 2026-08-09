@@ -1,4 +1,6 @@
-const styles = {
+import type { CSSProperties } from "react";
+
+const styles: Record<string, CSSProperties> = {
   form: {
     display: "flex",
     flexDirection: "column",
