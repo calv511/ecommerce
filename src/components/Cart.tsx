@@ -20,17 +20,17 @@ const CartItemImage: React.FC<CartItemImageProps> = ({ src, alt }) => {
   const [imageSrc, setImageSrc] = useState(src);
 
   return (
-    <img
-      src={imageSrc}
-      alt={alt}
-      className="img-fluid"
-      style={{ maxHeight: 120 }}
-      onError={() => {
-        if (imageSrc !== fallbackImage) {
-          setImageSrc(fallbackImage);
-        }
-      }}
-    />
+    <div className="cart-item-media">
+      <img
+        src={imageSrc}
+        alt={alt}
+        onError={() => {
+          if (imageSrc !== fallbackImage) {
+            setImageSrc(fallbackImage);
+          }
+        }}
+      />
+    </div>
   );
 };
 
@@ -75,64 +75,60 @@ const Cart: React.FC = () => {
   };
 
   return (
-    <div className="container py-4">
-      <div className="d-flex align-items-center justify-content-between gap-3 mb-4 flex-wrap">
-        <h2 className="mb-0">Shopping Cart</h2>
+    <div className="page">
+      <div className="page-header">
+        <div>
+          <h1 className="page-title">Shopping cart</h1>
+          <p className="page-subtitle">
+            {totalItems === 0
+              ? "Nothing here yet"
+              : `${totalItems} ${totalItems === 1 ? "item" : "items"}`}
+          </p>
+        </div>
         <button
-          className="btn btn-outline-primary"
+          className="btn btn-outline-primary btn-sm"
           onClick={() => navigate("/")}
         >
-          Back Home
+          Continue shopping
         </button>
       </div>
+
       {checkoutMessage ? (
-        <div className="alert alert-success" role="alert">
+        <div className="form-message form-message--success" role="status">
           {checkoutMessage}
         </div>
       ) : null}
       {checkoutError ? (
-        <div className="alert alert-danger" role="alert">
+        <div className="form-message form-message--error" role="alert">
           {checkoutError}
         </div>
       ) : null}
-      <div className="card p-3 mb-4 shadow-sm bg-light">
-        <div className="row g-3">
-          <div className="col-md-6">
-            <strong>Total products:</strong> {totalItems}
-          </div>
-          <div className="col-md-6 text-md-end">
-            <strong>Total price:</strong> ${totalPrice.toFixed(2)}
-          </div>
-        </div>
-        <div className="mt-3 text-md-end">
-          <button
-            className="btn btn-success"
-            onClick={handleCheckout}
-            disabled={items.length === 0 || isSaving}
-          >
-            {isSaving ? "Placing order..." : "Checkout"}
+
+      {items.length === 0 ? (
+        <div className="empty-state">
+          <p>Your cart is empty.</p>
+          <button className="btn btn-primary" onClick={() => navigate("/")}>
+            Browse products
           </button>
         </div>
-      </div>
-      {items.length === 0 ? (
-        <p>Your cart is empty.</p>
       ) : (
-        <div className="d-flex flex-column gap-3">
-          {items.map((item) => (
-            <div key={item.id} className="card p-3 shadow-sm">
-              <div className="row g-3 align-items-center">
-                <div className="col-md-2 text-center">
-                  <CartItemImage
-                    key={item.id}
-                    src={item.image}
-                    alt={item.title}
-                  />
-                </div>
-                <div className="col-md-8">
-                  <h5 className="mb-1">{item.title}</h5>
-                  <p className="mb-1">Price: ${item.price}</p>
+        <div className="cart-layout">
+          <div className="d-flex flex-column gap-3">
+            {items.map((item) => (
+              <div key={item.id} className="cart-item">
+                <CartItemImage
+                  key={item.id}
+                  src={item.image}
+                  alt={item.title}
+                />
+
+                <div>
+                  <h2 className="cart-item-title">{item.title}</h2>
+                  <p className="cart-item-price">
+                    ${item.price.toFixed(2)} each
+                  </p>
                   <label
-                    className="form-label mb-1"
+                    className="field-label"
                     htmlFor={`quantity-${item.id}`}
                   >
                     Quantity
@@ -141,7 +137,7 @@ const Cart: React.FC = () => {
                     id={`quantity-${item.id}`}
                     type="number"
                     min="1"
-                    className="form-control w-auto"
+                    className="form-control form-control-sm cart-qty"
                     value={item.quantity}
                     onChange={(event) => {
                       const nextQuantity = Number(event.target.value);
@@ -153,17 +149,49 @@ const Cart: React.FC = () => {
                     }}
                   />
                 </div>
-                <div className="col-md-2 text-md-end">
+
+                <div className="cart-item-actions text-end">
+                  <div className="product-price mb-2">
+                    ${(item.price * item.quantity).toFixed(2)}
+                  </div>
                   <button
-                    className="btn btn-outline-danger"
+                    className="btn btn-sm btn-outline-danger"
                     onClick={() => dispatch(removeFromCart(item.id))}
                   >
                     Remove
                   </button>
                 </div>
               </div>
+            ))}
+          </div>
+
+          <aside className="cart-summary">
+            <h2 className="section-title">Order summary</h2>
+            <div className="cart-summary-row">
+              <span>Items</span>
+              <span>{totalItems}</span>
             </div>
-          ))}
+            <div className="cart-summary-row">
+              <span>Shipping</span>
+              <span>Free</span>
+            </div>
+            <div className="cart-summary-total">
+              <span>Total</span>
+              <span>${totalPrice.toFixed(2)}</span>
+            </div>
+            <button
+              className="btn btn-success w-100 mt-3"
+              onClick={handleCheckout}
+              disabled={items.length === 0 || isSaving}
+            >
+              {isSaving ? "Placing order..." : "Checkout"}
+            </button>
+            {!user ? (
+              <p className="page-subtitle text-center mt-2 mb-0">
+                You'll need to sign in first.
+              </p>
+            ) : null}
+          </aside>
         </div>
       )}
     </div>

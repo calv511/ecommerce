@@ -1,8 +1,7 @@
-import { useState, useEffect, type CSSProperties } from "react";
+import { useState, useEffect } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../lib/firebase/firebase";
-import { useNavigate } from "react-router-dom";
-import styles from "../styles/auth-styles";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
@@ -32,32 +31,61 @@ const Login = () => {
       setError(error.message);
     }
   };
+
   return (
-    <div style={styles.form as CSSProperties}>
-      <h1>Login</h1>
-      <form onSubmit={handleSubmit}>
-        {error && <p style={styles.error}>{error}</p>}
-        <fieldset style={styles.fieldset}>
-          <legend style={styles.legend}>Sign In</legend>
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            style={styles.input}
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            style={styles.input}
-          />
-          <button type="submit" style={styles.button}>
-            Login
+    <div className="auth-page">
+      <div className="auth-card">
+        <h1 className="auth-title">Welcome back</h1>
+        <p className="auth-subtitle">Sign in to your account to continue.</p>
+
+        {error && (
+          <p className="form-message form-message--error" role="alert">
+            {error}
+          </p>
+        )}
+
+        <form onSubmit={handleSubmit}>
+          <div className="auth-fields">
+            <div>
+              <label className="field-label" htmlFor="login-email">
+                Email
+              </label>
+              <input
+                id="login-email"
+                className="form-control"
+                type="email"
+                autoComplete="email"
+                placeholder="you@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+
+            <div>
+              <label className="field-label" htmlFor="login-password">
+                Password
+              </label>
+              <input
+                id="login-password"
+                className="form-control"
+                type="password"
+                autoComplete="current-password"
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+          </div>
+
+          <button type="submit" className="btn btn-primary w-100">
+            Sign in
           </button>
-        </fieldset>
-      </form>
+        </form>
+
+        <p className="auth-footer">
+          Don't have an account? <Link to="/register">Create one</Link>
+        </p>
+      </div>
     </div>
   );
 };

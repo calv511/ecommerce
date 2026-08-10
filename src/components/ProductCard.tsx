@@ -27,27 +27,48 @@ const ProductCard:React.FC<{product: Product}> = ({product}) => {
   };
 
   return (
-    <div className="col-md-5 p-3 d-flex flex-column align-items-center gap-3 shadow">
-        <h3>{product.title}</h3>
-        <img
-          key={product.id}
-          src={imageSrc}
-          alt={product.title}
-          className="w-25"
-          onError={() => {
-            if (imageSrc !== fallbackImage) {
-              setImageSrc(fallbackImage);
-            }
-          }}
-        />
-        <p>${product.price}</p>
-        <h5>{product.category.toUpperCase()}</h5>
-        <Rating style={{ maxWidth: 150 }} value={product.rating.rate} readOnly/>
-        <p>Ratings: {product.rating.count}</p>
-        <p>{product.description}</p>
-        <button className={`btn ${isAdded ? "btn-success" : "btn-primary"}`} onClick={handleAddToCart}>
-          {isAdded ? "Added to Cart" : "Add to Cart"}
-        </button>
+    <div className="col">
+      <article className="product-card">
+        <div className="product-media">
+          <img
+            key={product.id}
+            src={imageSrc}
+            alt={product.title}
+            loading="lazy"
+            onError={() => {
+              if (imageSrc !== fallbackImage) {
+                setImageSrc(fallbackImage);
+              }
+            }}
+          />
+        </div>
+
+        <div className="product-body">
+          <span className="product-category">{product.category}</span>
+          <h3 className="product-title" title={product.title}>
+            {product.title}
+          </h3>
+
+          <div className="product-rating">
+            <Rating style={{ maxWidth: 88 }} value={product.rating.rate} readOnly />
+            <span className="product-rating-count">
+              {product.rating.rate} ({product.rating.count})
+            </span>
+          </div>
+
+          <p className="product-desc">{product.description}</p>
+
+          <div className="product-footer">
+            <span className="product-price">${product.price.toFixed(2)}</span>
+            <button
+              className={`btn btn-sm ${isAdded ? "btn-success" : "btn-primary"}`}
+              onClick={handleAddToCart}
+            >
+              {isAdded ? "Added ✓" : "Add to Cart"}
+            </button>
+          </div>
+        </div>
+      </article>
     </div>
   )
 }

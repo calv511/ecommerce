@@ -5,12 +5,11 @@ import { useQuery } from "@tanstack/react-query";
 import { collection, deleteDoc, getDocs, query, where } from "firebase/firestore";
 import { db } from "../lib/firebase/firebase";
 import { deleteCart, getOrdersByUserId } from "../lib/firebase/firestore";
-import styles from "../styles/auth-styles";
 
 const Profile: React.FC = () => {
   const { user } = useAuth();
   const [displayName, setDisplayName] = useState(user?.displayName || "");
-  const [email, setEmail] = useState(user?.email || "");
+  const [email] = useState(user?.email || "");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const {
@@ -68,59 +67,120 @@ const Profile: React.FC = () => {
   };
 
   return (
-    <div style={styles.form}>
-      <h1>Profile</h1>
-      <form onSubmit={handleUpdateProfile}>
-        <input
-          style={styles.input}
-          type="text"
-          value={displayName}
-          onChange={(e) => setDisplayName(e.target.value)}
-          placeholder="Name"
-        />
-        <input
-          style={styles.input}
-          disabled={true}
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="Email"
-        />
-        <button style={styles.button} type="submit">
-          Update Profile
-        </button>
-        {success && <p style={styles.success}>{success}</p>}
-        {error && <p style={styles.error}>{error}</p>}
-        <button
-          type="button"
-          onClick={handleDeleteAccount}
-          style={styles.deleteAccountButton}
-        >
-          Delete Account
-        </button>
-      </form>
-      <section>
-        <h2>Past Orders</h2>
-        {ordersLoading ? (
-          <p>Loading orders...</p>
-        ) : ordersError ? (
-          <p style={styles.error}>
-            Could not load your orders: {ordersError.message}
-          </p>
-        ) : orders.length === 0 ? (
-          <p>No past orders.</p>
-        ) : (
-          <ul>
-            {orders.map((order) => (
-              <li key={order.id}>
-                {order.createdAt?.toDate().toLocaleDateString()} —{" "}
-                {order.totalItems} item{order.totalItems === 1 ? "" : "s"} — $
-                {order.totalPrice.toFixed(2)}
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
+    <div className="page">
+      <div className="page-header">
+        <div>
+          <h1 className="page-title">
+            {user?.displayName ? `Hi, ${user.displayName}` : "Your profile"}
+          </h1>
+          <p className="page-subtitle">{email}</p>
+        </div>
+      </div>
+
+      <div className="profile-layout">
+        <section className="card-panel">
+          <h2 className="section-title">Account details</h2>
+
+          {success && (
+            <p className="form-message form-message--success" role="status">
+              {success}
+            </p>
+          )}
+          {error && (
+            <p className="form-message form-message--error" role="alert">
+              {error}
+            </p>
+          )}
+
+          <form onSubmit={handleUpdateProfile}>
+            <div className="auth-fields">
+              <div>
+                <label className="field-label" htmlFor="profile-name">
+                  Display name
+                </label>
+                <input
+                  id="profile-name"
+                  className="form-control"
+                  type="text"
+                  value={displayName}
+                  onChange={(e) => setDisplayName(e.target.value)}
+                  placeholder="Your name"
+                />
+              </div>
+
+              <div>
+                <label className="field-label" htmlFor="profile-email">
+                  Email
+                </label>
+                <input
+                  id="profile-email"
+                  className="form-control"
+                  disabled={true}
+                  type="email"
+                  value={email}
+                  readOnly
+                />
+              </div>
+            </div>
+
+            <button className="btn btn-primary" type="submit">
+              Save changes
+            </button>
+          </form>
+
+          <div className="danger-zone">
+            <p className="danger-zone-note">
+              Deleting your account also removes your saved cart and every order
+              you've placed. This can't be undone.
+            </p>
+            <button
+              type="button"
+              onClick={handleDeleteAccount}
+              className="btn btn-sm btn-outline-danger"
+            >
+              Delete account
+            </button>
+          </div>
+        </section>
+
+        <section className="card-panel">
+          <h2 className="section-title">Past orders</h2>
+          {ordersLoading ? (
+            <p className="page-subtitle mb-0">Loading orders...</p>
+          ) : ordersError ? (
+            <p className="form-message form-message--error mb-0" role="alert">
+              Could not load your orders: {ordersError.message}
+            </p>
+          ) : orders.length === 0 ? (
+            <div className="empty-state">
+              <p className="mb-0">No past orders yet.</p>
+            </div>
+          ) : (
+            <ul className="order-list">
+              {orders.map((order) => (
+                <li key={order.id} className="order-item">
+                  <div>
+                    <div className="order-date">
+                      {order.createdAt?.toDate().toLocaleDateString(undefined, {
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                      })}
+                    </div>
+                    <div className="order-meta">
+                      {order.totalItems} item
+                      {order.totalItems === 1 ? "" : "s"}
+                    </div>
+                  </div>
+                  <div className="order-total">
+                    ${order.totalPrice.toFixed(2)}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      </div>
     </div>
   );
 };

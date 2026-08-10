@@ -1,17 +1,108 @@
 .nav-container {
+  position: sticky;
+  top: 0;
+  z-index: 20;
   display: flex;
-  gap: 1rem;
   align-items: center;
-  padding: 1rem;
-  background-color: #000;
-  width: 100%;
-  margin-bottom: 1rem;
+  gap: 0.25rem;
+  height: var(--nav-height);
+  padding: 0 1.25rem;
+  background: rgba(17, 24, 39, 0.92);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
-.link {
+
+.nav-inner {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   color: #fff;
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: -0.01em;
   text-decoration: none;
-  margin: 0 1rem;
-  font-size: 1.2rem;
-  font-weight: 1.2rem;
-  cursor: pointer;
+  margin-right: 1.25rem;
+}
+
+.nav-brand-mark {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: var(--brand);
+  font-size: 0.95rem;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* Account links sit on the right. */
+.nav-links--end {
+  margin-left: auto;
+}
+
+.link {
+  color: rgba(255, 255, 255, 0.72);
+  text-decoration: none;
+  font-size: 0.92rem;
+  font-weight: 550;
+  white-space: nowrap;
+  padding: 0.45rem 0.75rem;
+  border-radius: var(--radius-sm);
+  transition:
+    color 0.12s ease,
+    background-color 0.12s ease;
+}
+
+.link:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.link.is-active {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.link--cta {
+  color: #fff;
+  background: var(--brand);
+}
+
+.link--cta:hover {
+  background: var(--brand-dark);
+}
+
+/* On narrow screens drop the wordmark and tighten spacing so the account
+   links still fit instead of overflowing off-screen. */
+@media (max-width: 560px) {
+  .nav-container {
+    padding: 0 0.6rem;
+  }
+
+  .nav-brand {
+    margin-right: 0.25rem;
+  }
+
+  .nav-brand-text {
+    display: none;
+  }
+
+  .link {
+    padding: 0.4rem 0.5rem;
+    font-size: 0.82rem;
+  }
 }
