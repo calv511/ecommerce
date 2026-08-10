@@ -1,4 +1,4 @@
-import type { CartItem } from "./types";
+import type { CartItem } from "../../types/types";
 import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "./firebase";
 
