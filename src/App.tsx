@@ -12,15 +12,17 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Logout from "./pages/Logout";
 import Navbar from "./components/Navbar/Navbar";
+import CartSync from "./features/cart/CartSync";
+
+const client = new QueryClient();
 
 function App() {
-  const client = new QueryClient();
-
   return (
     <QueryClientProvider client={client}>
       <Provider store={store}>
         <ProductProvider>
           <AuthProvider>
+            <CartSync />
             <BrowserRouter>
               <Navbar />
               <Routes>

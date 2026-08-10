@@ -42,8 +42,12 @@ const cartSlice = createSlice({
         clearCart: (state) => {
             state.items = [];
         },
+        // Replaces the whole cart. Used when hydrating from Firestore.
+        setCart: (state, action: PayloadAction<CartItem[]>) => {
+            state.items = action.payload;
+        },
     },
 });
 
-export const { addToCart, removeFromCart, setQuantity, clearCart } = cartSlice.actions;
+export const { addToCart, removeFromCart, setQuantity, clearCart, setCart } = cartSlice.actions;
 export default cartSlice.reducer;

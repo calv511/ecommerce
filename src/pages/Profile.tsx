@@ -2,17 +2,9 @@ import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { updateProfile, deleteUser } from "firebase/auth";
 import { useQuery } from "@tanstack/react-query";
-import {
-  collection,
-  deleteDoc,
-  doc,
-  getDocs,
-  query,
-  where,
-} from "firebase/firestore";
+import { collection, deleteDoc, getDocs, query, where } from "firebase/firestore";
 import { db } from "../lib/firebase/firebase";
-import { getOrdersByUserId } from "../lib/firebase/firestore";
-import type { Order } from "../types/types";
+import { deleteCart, getOrdersByUserId } from "../lib/firebase/firestore";
 import styles from "../styles/auth-styles";
 
 const Profile: React.FC = () => {
@@ -58,7 +50,7 @@ const Profile: React.FC = () => {
       );
       const ordersSnapshot = await getDocs(ordersQuery);
       await Promise.all([
-        deleteDoc(doc(db, "user", user.uid)),
+        deleteCart(user.uid),
         ...ordersSnapshot.docs.map((order) => deleteDoc(order.ref)),
       ]);
       await deleteUser(user);
@@ -108,7 +100,7 @@ const Profile: React.FC = () => {
           <p>No past orders.</p>
         ) : (
           <ul>
-            {orders.map((order: Order) => (
+            {orders.map((order) => (
               <li key={order.id}>
                 {order.createdAt?.toDate().toLocaleDateString()} —{" "}
                 {order.totalItems} item{order.totalItems === 1 ? "" : "s"} — $

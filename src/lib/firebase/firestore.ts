@@ -1,5 +1,17 @@
-import type { CartItem } from "./types";
-import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
+import type { CartItem, Order } from "../../types/types";
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  getDoc,
+  getDocs,
+  orderBy,
+  query,
+  serverTimestamp,
+  setDoc,
+  where,
+} from "firebase/firestore";
 import { db } from "./firebase";
 
 // create order
@@ -15,18 +27,50 @@ export async function createOrder(
     items,
     totalItems,
     totalPrice,
-    createdAt: new Date(),
+    createdAt: serverTimestamp(),
   });
 }
 
-// get orders by userId where usserId is equal to the userId passed in and orderBy createdAt in descending order
-export async function getOrdersByUserId(userId: string) {
+// get every order belonging to a user, newest first
+export async function getOrdersByUserId(userId: string): Promise<Order[]> {
   const ordersCollection = collection(db, "orders");
-  const q = query(ordersCollection, where("userId", "==", userId));
+  const q = query(
+    ordersCollection,
+    where("userId", "==", userId),
+    orderBy("createdAt", "desc"),
+  );
   const querySnapshot = await getDocs(q);
-  const orders: any[] = [];
-  querySnapshot.forEach((doc) => {
-    orders.push({ id: doc.id, ...doc.data() });
+  return querySnapshot.docs.map(
+    (doc) => ({ id: doc.id, ...doc.data() }) as Order,
+  );
+}
+
+// Each user has a single cart document keyed by their uid.
+const cartDoc = (userId: string) => doc(db, "carts", userId);
+
+// read the saved cart, or an empty one if the user has never had a cart
+export async function getCart(userId: string): Promise<CartItem[]> {
+  const snapshot = await getDoc(cartDoc(userId));
+
+  if (!snapshot.exists()) {
+    return [];
+  }
+
+  const items = snapshot.data().items;
+  return Array.isArray(items) ? (items as CartItem[]) : [];
+}
+
+// overwrite the saved cart
+export async function saveCart(
+  userId: string,
+  items: CartItem[],
+): Promise<void> {
+  await setDoc(cartDoc(userId), {
+    items,
+    updatedAt: serverTimestamp(),
   });
-  return orders;
+}
+
+export async function deleteCart(userId: string): Promise<void> {
+  await deleteDoc(cartDoc(userId));
 }
