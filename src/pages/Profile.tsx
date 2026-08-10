@@ -13,10 +13,17 @@ const Profile: React.FC = () => {
   const [email, setEmail] = useState(user?.email || "");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const { data: orders = [], isLoading: ordersLoading } = useQuery({
+  const {
+    data: orders = [],
+    isLoading: ordersLoading,
+    error: ordersError,
+  } = useQuery({
     queryKey: ["orders", user?.uid],
     queryFn: () => getOrdersByUserId(user!.uid),
     enabled: Boolean(user),
+    // A missing index or a denied read will never succeed on retry, and
+    // retrying just delays the error reaching the screen.
+    retry: false,
   });
 
   // Handle profile update submission
@@ -96,6 +103,10 @@ const Profile: React.FC = () => {
         <h2>Past Orders</h2>
         {ordersLoading ? (
           <p>Loading orders...</p>
+        ) : ordersError ? (
+          <p style={styles.error}>
+            Could not load your orders: {ordersError.message}
+          </p>
         ) : orders.length === 0 ? (
           <p>No past orders.</p>
         ) : (
