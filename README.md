@@ -57,7 +57,7 @@ A single-page e-commerce storefront built with React, TypeScript, and Vite. Prod
 
 | Category         | Library                                |
 | ---------------- | -------------------------------------- |
-| UI               | React 19, React Bootstrap, Bootstrap 5 |
+| UI               | React 19, Bootstrap 5, custom CSS      |
 | Language         | TypeScript                             |
 | Build tool       | Vite                                   |
 | Auth & database  | Firebase Authentication, Cloud Firestore |

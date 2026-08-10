@@ -5,7 +5,6 @@ import {
   signInAnonymously,
   GoogleAuthProvider,
   signInWithPopup,
-  onAuthStateChanged,
   signOut,
 } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
@@ -23,18 +22,11 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
-// 1. Listen for Authentication State Changes
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    console.log("User is signed in with UID:", user.uid);
-    // Update your UI or redirect the user to their dashboard
-  } else {
-    console.log("No user is signed in.");
-    // Show login/registration forms
-  }
-});
 
-// 2. Sign In with Email and Password
+// Auth state is subscribed to in AuthContext, which is what the app renders
+// from. There is no second listener here.
+
+// Sign In with Email and Password
 export async function loginUser(email: string, password: string) {
   try {
     const userCredential = await signInWithEmailAndPassword(
