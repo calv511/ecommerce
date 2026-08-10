@@ -31,7 +31,10 @@ A single-page e-commerce storefront built with React, TypeScript, and Vite. Prod
 
 ### Accounts
 
-- Email and password registration and sign-in through Firebase Authentication. The username entered at registration is saved as the account's display name.
+- Three ways in through Firebase Authentication: email and password, Google, or an anonymous guest session. All three are offered on both the login and register pages.
+- The username entered at registration is saved as the account's display name.
+- Guest sessions get a real UID, so a guest's cart and orders persist exactly like a registered user's. The profile page says plainly that the session is temporary and that signing out loses access to it for good.
+- Firebase auth error codes are translated into readable messages, so a closed Google popup is ignored rather than shown as an error, and a disabled provider says so instead of surfacing `auth/operation-not-allowed`.
 - Auth state is shared app-wide through `AuthContext`, which also exposes an `authReady` flag so the rest of the app can tell "not signed in" apart from "not known yet" during the initial auth check.
 - The navbar swaps between Login/Register and Profile/Logout depending on whether anyone is signed in.
 - The profile page updates the display name, and can delete the account — which also removes that user's saved cart and every order they placed.
@@ -102,7 +105,7 @@ Product data comes from the public Fake Store API and needs no key. The Firebase
 To run against your own Firebase project:
 
 1. Replace the `firebaseConfig` object in `src/lib/firebase/firebase.ts` with the config from your project (Project settings → Your apps → Web app).
-2. Under **Authentication → Sign-in method**, enable **Email/Password**.
+2. Under **Authentication → Sign-in method**, enable **Email/Password**, **Google**, and **Anonymous**. The app offers all three; any you leave disabled will report that the method isn't enabled when someone tries it.
 3. Create a **Cloud Firestore** database.
 4. Publish the security rules in [`firestore.rules`](firestore.rules) (Firestore → Rules). They restrict every document to the user who owns it and make orders immutable once placed. Do not leave the database in test mode — those rules allow the whole world to read every order, and they expire after 30 days.
 5. Create the composite index described in [`firestore.indexes.json`](firestore.indexes.json): collection `orders`, `userId` ascending then `createdAt` descending. The order history query needs it, and Firestore will not create it automatically. If you skip this step the profile page reports the failure and links straight to the console page that creates it.

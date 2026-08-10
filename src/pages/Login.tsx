@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../lib/firebase/firebase";
+import { loginUser } from "../lib/firebase/firebase";
+import { describeAuthError } from "../lib/firebase/authErrors";
+import SocialAuthButtons from "../components/SocialAuthButtons";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
@@ -22,13 +23,13 @@ const Login = () => {
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setError("");
     try {
       // Sign in user with email and password using Firebase Authentication
-      await signInWithEmailAndPassword(auth, email, password);
-      // Update the user's display name with the username
+      await loginUser(email, password);
       navigate("/profile");
-    } catch (error: any) {
-      setError(error.message);
+    } catch (error) {
+      setError(describeAuthError(error));
     }
   };
 
@@ -81,6 +82,8 @@ const Login = () => {
             Sign in
           </button>
         </form>
+
+        <SocialAuthButtons onError={setError} />
 
         <p className="auth-footer">
           Don't have an account? <Link to="/register">Create one</Link>

@@ -500,6 +500,65 @@ select:focus-visible {
   margin-bottom: 1.25rem;
 }
 
+/* Rule either side of a centered "or". */
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 1.25rem 0;
+  color: var(--ink-muted);
+  font-size: 0.8rem;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.auth-alternatives {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.btn-social {
+  --bs-btn-bg: var(--surface);
+  --bs-btn-border-color: var(--border);
+  --bs-btn-color: var(--ink-soft);
+  --bs-btn-hover-bg: #f9fafb;
+  --bs-btn-hover-border-color: #d1d5db;
+  --bs-btn-hover-color: var(--ink);
+  --bs-btn-disabled-bg: var(--surface);
+  --bs-btn-disabled-border-color: var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  width: 100%;
+  font-weight: 550;
+}
+
+.auth-guest-note {
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: var(--ink-muted);
+  margin: 0.75rem 0 0;
+}
+
+.guest-banner {
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  color: #854d0e;
+  border-radius: var(--radius-sm);
+  padding: 0.75rem 0.9rem;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  margin-bottom: 1.25rem;
+}
+
 .auth-footer {
   margin-top: 1.25rem;
   padding-top: 1.25rem;

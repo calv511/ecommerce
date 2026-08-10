@@ -1,14 +1,26 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth } from "../lib/firebase/firebase";
+import { describeAuthError } from "../lib/firebase/authErrors";
+import SocialAuthButtons from "../components/SocialAuthButtons";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const Register = () => {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const { user } = useAuth();
   const navigate = useNavigate();
+
+  // Google and guest sign-in happen outside this form, so redirect off the
+  // auth state rather than off the submit handler.
+  useEffect(() => {
+    if (user) {
+      navigate("/profile");
+    }
+  }, [user, navigate]);
 
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -23,8 +35,8 @@ const Register = () => {
       // Update the user's display name with the username
       await updateProfile(userCredential.user, { displayName: username });
       navigate("/profile");
-    } catch (error: any) {
-      setError(error.message);
+    } catch (error) {
+      setError(describeAuthError(error));
     }
   };
 
@@ -94,6 +106,8 @@ const Register = () => {
             Create account
           </button>
         </form>
+
+        <SocialAuthButtons onError={setError} guestLabel="Browse as guest" />
 
         <p className="auth-footer">
           Already have an account? <Link to="/login">Sign in</Link>

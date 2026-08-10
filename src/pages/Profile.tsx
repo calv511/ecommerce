@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { collection, deleteDoc, getDocs, query, where } from "firebase/firestore";
 import { db } from "../lib/firebase/firebase";
 import { deleteCart, getOrdersByUserId } from "../lib/firebase/firestore";
+import { Link } from "react-router-dom";
 
 const Profile: React.FC = () => {
   const { user } = useAuth();
@@ -71,11 +72,26 @@ const Profile: React.FC = () => {
       <div className="page-header">
         <div>
           <h1 className="page-title">
-            {user?.displayName ? `Hi, ${user.displayName}` : "Your profile"}
+            {user?.isAnonymous
+              ? "Guest account"
+              : user?.displayName
+                ? `Hi, ${user.displayName}`
+                : "Your profile"}
           </h1>
-          <p className="page-subtitle">{email}</p>
+          <p className="page-subtitle">
+            {user?.isAnonymous ? "Not signed in with an email" : email}
+          </p>
         </div>
       </div>
+
+      {user?.isAnonymous ? (
+        <div className="guest-banner">
+          You're browsing as a guest. Your cart and orders are saved to this
+          temporary account, and signing out or clearing your browser will lose
+          access to them for good.{" "}
+          <Link to="/register">Create an account</Link> to keep them.
+        </div>
+      ) : null}
 
       <div className="profile-layout">
         <section className="card-panel">
