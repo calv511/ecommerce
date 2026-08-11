@@ -1,4 +1,4 @@
-import { initializeApp } from "firebase/app";
+import { deleteApp, initializeApp } from "firebase/app";
 import { signInAnonymously, getAuth } from "firebase/auth";
 import { addDoc, collection, getFirestore } from "firebase/firestore";
 
@@ -32,7 +32,12 @@ async function seedProducts() {
   console.log(`Seeded ${products.length} products.`);
 }
 
-seedProducts().catch((error) => {
-  console.error("Unable to seed products:", error);
-  process.exitCode = 1;
-});
+// The Firestore client keeps a connection open, which holds the Node event
+// loop and stops the script from exiting on its own. Tear the app down so the
+// process ends instead of hanging after the writes land.
+seedProducts()
+  .catch((error) => {
+    console.error("Unable to seed products:", error);
+    process.exitCode = 1;
+  })
+  .finally(() => deleteApp(app));

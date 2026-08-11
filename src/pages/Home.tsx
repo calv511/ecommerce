@@ -11,7 +11,11 @@ const Home: React.FC = () => {
   const { products, dispatch, selectedCategory } = useProductContext();
   const { user } = useAuth();
 
-  const { data: allProductsData } = useQuery({
+  const {
+    data: allProductsData,
+    isPending,
+    error,
+  } = useQuery({
     queryKey: ["products"],
     queryFn: getProducts,
   });
@@ -34,9 +38,11 @@ const Home: React.FC = () => {
         <div>
           <h1 className="page-title">Shop all products</h1>
           <p className="page-subtitle">
-            {filteredProducts.length > 0
-              ? `${filteredProducts.length} ${filteredProducts.length === 1 ? "product" : "products"}${selectedCategory ? ` in ${selectedCategory}` : ""}`
-              : "Loading products..."}
+            {isPending
+              ? "Loading products..."
+              : error
+                ? "Could not load products"
+                : `${filteredProducts.length} ${filteredProducts.length === 1 ? "product" : "products"}${selectedCategory ? ` in ${selectedCategory}` : ""}`}
           </p>
         </div>
         {user && (
@@ -77,11 +83,38 @@ const Home: React.FC = () => {
         ) : null}
       </div>
 
-      <div className="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 g-4">
-        {filteredProducts.map((product: Product) => (
-          <ProductCard product={product} key={product.id} />
-        ))}
-      </div>
+      {isPending ? (
+        <div className="empty-state">
+          <p className="mb-0">Loading products...</p>
+        </div>
+      ) : error ? (
+        <div className="form-message form-message--error" role="alert">
+          Could not load products: {error.message}
+        </div>
+      ) : filteredProducts.length === 0 ? (
+        <div className="empty-state">
+          {selectedCategory ? (
+            <p className="mb-0">No products in {selectedCategory}.</p>
+          ) : (
+            <>
+              <p>The catalog is empty.</p>
+              {user ? (
+                <Link className="btn btn-primary" to="/products/new">
+                  Add the first product
+                </Link>
+              ) : (
+                <p className="mb-0">Sign in to add the first product.</p>
+              )}
+            </>
+          )}
+        </div>
+      ) : (
+        <div className="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 g-4">
+          {filteredProducts.map((product: Product) => (
+            <ProductCard product={product} key={product.id} />
+          ))}
+        </div>
+      )}
     </div>
   );
 };
