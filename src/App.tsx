@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Home from "./pages/Home";
 import Profile from "./pages/Profile";
 import { ProductProvider } from "./context/ProductContext";
@@ -13,7 +13,18 @@ import Logout from "./pages/Logout";
 import Navbar from "./components/Navbar/Navbar";
 import CartSync from "./features/cart/CartSync";
 import ProductEditor from "./pages/ProductEditor";
+import { useAuth } from "./context/AuthContext";
+import type { ReactNode } from "react";
 const client = new QueryClient();
+
+function RequireAuth({ children }: { children: ReactNode }) {
+  const { user, authReady } = useAuth();
+
+  if (!authReady) return null;
+  if (!user) return <Navigate to="/login" replace />;
+
+  return children;
+}
 
 function App() {
   return (
@@ -31,8 +42,22 @@ function App() {
                 <Route path="/Login" element={<Login />} />
                 <Route path="/Register" element={<Register />} />
                 <Route path="/Logout" element={<Logout />} />
-                <Route path="/products/new" element={<ProductEditor />} />
-                <Route path="/products/:id/edit" element={<ProductEditor />} />
+                <Route
+                  path="/products/new"
+                  element={
+                    <RequireAuth>
+                      <ProductEditor />
+                    </RequireAuth>
+                  }
+                />
+                <Route
+                  path="/products/:id/edit"
+                  element={
+                    <RequireAuth>
+                      <ProductEditor />
+                    </RequireAuth>
+                  }
+                />
               </Routes>
             </BrowserRouter>
           </AuthProvider>
