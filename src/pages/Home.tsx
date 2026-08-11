@@ -9,6 +9,7 @@ import {
   fetchProductsByCategory,
 } from "../api/api";
 import { useEffect } from "react";
+
 const Home: React.FC = () => {
   const { products, dispatch, selectedCategory } = useProductContext();
 
