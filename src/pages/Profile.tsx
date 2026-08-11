@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { updateProfile, deleteUser } from "firebase/auth";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   collection,
   deleteDoc,
@@ -14,11 +14,15 @@ import {
   deleteCart,
   getOrdersByUserId,
   getUserProfile,
+  updateUserProfile,
 } from "../lib/firebase/firestore";
 import { Link } from "react-router-dom";
+
 const Profile: React.FC = () => {
   const { user } = useAuth();
+  const queryClient = useQueryClient();
   const [displayName, setDisplayName] = useState("");
+  const [address, setAddress] = useState("");
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -45,6 +49,7 @@ const Profile: React.FC = () => {
     if (userProfile) {
       setDisplayName(userProfile.displayName);
       setEmail(userProfile.email);
+      setAddress(userProfile.address);
     }
   }, [userProfile]);
 
@@ -59,7 +64,16 @@ const Profile: React.FC = () => {
     }
     try {
       await updateProfile(user, {
-        displayName: displayName,
+        displayName,
+      });
+      await updateUserProfile(
+        user.uid,
+        user.email ?? email,
+        displayName,
+        address,
+      );
+      await queryClient.invalidateQueries({
+        queryKey: ["userProfile", user.uid],
       });
       setSuccess("Profile updated succesfully");
     } catch (error: any) {
@@ -101,7 +115,9 @@ const Profile: React.FC = () => {
                 : "Your profile"}
           </h1>
           <p className="page-subtitle">
-            {user?.isAnonymous ? "Not signed in with an email" : userProfile?.email}
+            {user?.isAnonymous
+              ? "Not signed in with an email"
+              : userProfile?.email}
           </p>
         </div>
       </div>
@@ -143,6 +159,21 @@ const Profile: React.FC = () => {
                   value={displayName}
                   onChange={(e) => setDisplayName(e.target.value)}
                   placeholder="Your name"
+                />
+              </div>
+
+              <div>
+                <label className="field-label" htmlFor="profile-address">
+                  Address
+                </label>
+                <input
+                  id="profile-address"
+                  className="form-control"
+                  type="text"
+                  autoComplete="street-address"
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  placeholder="Your address"
                 />
               </div>
 
