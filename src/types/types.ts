@@ -26,4 +26,11 @@ export interface Order {
   createdAt: Timestamp; // from "firebase/firestore"
 }
 
+export interface UserProfile {
+  userId: string; // Firestore doc id
+  email: string;
+  displayName: string;
+  address: string;
+}
+
 export type Category = string;
