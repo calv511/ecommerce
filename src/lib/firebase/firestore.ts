@@ -1,4 +1,4 @@
-import type { CartItem, Order } from "../../types/types";
+import type { CartItem, Order, Product } from "../../types/types";
 import {
   addDoc,
   collection,
@@ -139,4 +139,41 @@ export async function updateUserProfile(
 export async function deleteUserProfile(userId: string): Promise<void> {
   const userDoc = doc(db, "users", userId);
   await deleteDoc(userDoc);
+}
+
+const productsCollection = collection(db, "products");
+
+export async function getProducts(): Promise<Product[]> {
+  const querySnapshot = await getDocs(productsCollection);
+  return querySnapshot.docs.map(
+    (doc) => ({ id: doc.id, ...doc.data() }) as Product,
+  );
+}
+
+export async function getProductById(productId: string): Promise<Product | null> {
+  const snapshot = await getDoc(doc(db, "products", productId));
+
+  if (!snapshot.exists()) {
+    return null;
+  }
+
+  return { id: snapshot.id, ...snapshot.data() } as Product;
+}
+
+export async function createProduct(
+  product: Omit<Product, "id">,
+): Promise<string> {
+  const productDoc = await addDoc(productsCollection, product);
+  return productDoc.id;
+}
+
+export async function updateProduct(
+  productId: string,
+  product: Partial<Omit<Product, "id">>,
+): Promise<void> {
+  await setDoc(doc(db, "products", productId), product, { merge: true });
+}
+
+export async function deleteProduct(productId: string): Promise<void> {
+  await deleteDoc(doc(db, "products", productId));
 }

@@ -1,13 +1,8 @@
-// import { useEffect} from "react";
-import type { Category, Product } from "../types/types";
+import type { Product } from "../types/types";
 import ProductCard from "../components/ProductCard";
 import { useProductContext } from "../context/ProductContext";
 import { useQuery } from "@tanstack/react-query";
-import {
-  fetchCategories,
-  fetchProducts,
-  fetchProductsByCategory,
-} from "../api/api";
+import { getProducts } from "../lib/firebase/firestore";
 import { useEffect } from "react";
 
 const Home: React.FC = () => {
@@ -15,28 +10,19 @@ const Home: React.FC = () => {
 
   const { data: allProductsData } = useQuery({
     queryKey: ["products"],
-    queryFn: fetchProducts,
-  });
-
-  const { data: categoryProductsData } = useQuery({
-    queryKey: ["products", selectedCategory],
-    queryFn: () => fetchProductsByCategory(selectedCategory),
-    enabled: Boolean(selectedCategory),
+    queryFn: getProducts,
   });
 
   useEffect(() => {
     if (allProductsData) {
-      dispatch({ type: "SET_PRODUCTS", payload: allProductsData.data });
+      dispatch({ type: "SET_PRODUCTS", payload: allProductsData });
     }
   }, [dispatch, allProductsData]);
 
-  const { data: categories } = useQuery({
-    queryKey: ["categories"],
-    queryFn: fetchCategories,
-  });
+  const categories = [...new Set(products.map((product) => product.category))];
 
   const filteredProducts = selectedCategory
-    ? (categoryProductsData?.data ?? [])
+    ? products.filter((product) => product.category === selectedCategory)
     : products;
 
   return (
@@ -65,7 +51,7 @@ const Home: React.FC = () => {
           value={selectedCategory}
         >
           <option value="">All Categories</option>
-          {categories?.data.map((category: Category) => (
+          {categories.map((category) => (
             <option value={category} key={category}>
               {category}
             </option>
