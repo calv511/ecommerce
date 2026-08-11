@@ -25,7 +25,6 @@ function RequireAuth({ children }: { children: ReactNode }) {
 
   return children;
 }
-
 function App() {
   return (
     <QueryClientProvider client={client}>
@@ -40,7 +39,11 @@ function App() {
                 <Route path="/profile" element={<Profile />} />
                 <Route
                   path="/orders/:orderId"
-                  element={<RequireAuth><OrderDetail /></RequireAuth>}
+                  element={
+                    <RequireAuth>
+                      <OrderDetail />
+                    </RequireAuth>
+                  }
                 />
                 <Route path="/cart" element={<Cart />} />
                 <Route path="/Login" element={<Login />} />
