@@ -24,10 +24,10 @@ const cartSlice = createSlice({
                 state.items.push({ ...action.payload, quantity: 1 });
             }
         },
-        removeFromCart: (state, action: PayloadAction<number>) => {
+        removeFromCart: (state, action: PayloadAction<string>) => {
             state.items = state.items.filter((item) => item.id !== action.payload);
         },
-        setQuantity: (state, action: PayloadAction<{ id: number; quantity: number }>) => {
+        setQuantity: (state, action: PayloadAction<{ id: string; quantity: number }>) => {
             if (action.payload.quantity <= 0) {
                 state.items = state.items.filter((item) => item.id !== action.payload.id);
                 return;

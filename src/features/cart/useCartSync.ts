@@ -15,7 +15,7 @@ const SAVE_DEBOUNCE_MS = 800;
  * silently drops something the user added.
  */
 export function mergeCarts(local: CartItem[], remote: CartItem[]): CartItem[] {
-  const merged = new Map<number, CartItem>();
+  const merged = new Map<string, CartItem>();
 
   for (const item of [...remote, ...local]) {
     const existing = merged.get(item.id);
