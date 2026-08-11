@@ -6,8 +6,8 @@ import {
   type ReactNode,
 } from "react";
 import { onAuthStateChanged, type User } from "firebase/auth";
-import { auth } from "../lib/firebase/firebase";
-
+import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
+import { auth, db } from "../lib/firebase/firebase";
 interface AuthContextType {
   user: null | User;
   setUser: (user: User) => void;
@@ -30,6 +30,24 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         setUser(user);
+        void (async () => {
+          try {
+            const userDoc = doc(db, "users", user.uid);
+            const snapshot = await getDoc(userDoc);
+
+            if (!snapshot.exists()) {
+              await setDoc(userDoc, {
+                userId: user.uid,
+                email: user.email ?? "",
+                displayName: user.displayName ?? "",
+                address: "",
+                createdAt: serverTimestamp(),
+              });
+            }
+          } catch (error) {
+            console.error("Unable to create user profile:", error);
+          }
+        })();
       } else {
         setUser(null);
       }

@@ -2,10 +2,10 @@ import { useState, useEffect } from "react";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth } from "../lib/firebase/firebase";
 import { describeAuthError } from "../lib/firebase/authErrors";
+import { createUserProfile } from "../lib/firebase/firestore";
 import SocialAuthButtons from "../components/SocialAuthButtons";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-
 const Register = () => {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
@@ -34,6 +34,7 @@ const Register = () => {
       );
       // Update the user's display name with the username
       await updateProfile(userCredential.user, { displayName: username });
+      await createUserProfile(userCredential.user.uid, email, username, "");
       navigate("/profile");
     } catch (error) {
       setError(describeAuthError(error));
