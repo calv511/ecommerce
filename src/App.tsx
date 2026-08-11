@@ -13,10 +13,10 @@ import Logout from "./pages/Logout";
 import Navbar from "./components/Navbar/Navbar";
 import CartSync from "./features/cart/CartSync";
 import ProductEditor from "./pages/ProductEditor";
+import OrderDetail from "./pages/OrderDetail";
 import { useAuth } from "./context/AuthContext";
 import type { ReactNode } from "react";
 const client = new QueryClient();
-
 function RequireAuth({ children }: { children: ReactNode }) {
   const { user, authReady } = useAuth();
 
@@ -38,6 +38,10 @@ function App() {
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/profile" element={<Profile />} />
+                <Route
+                  path="/orders/:orderId"
+                  element={<RequireAuth><OrderDetail /></RequireAuth>}
+                />
                 <Route path="/cart" element={<Cart />} />
                 <Route path="/Login" element={<Login />} />
                 <Route path="/Register" element={<Register />} />

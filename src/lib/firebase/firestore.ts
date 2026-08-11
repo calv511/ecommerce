@@ -45,6 +45,16 @@ export async function getOrdersByUserId(userId: string): Promise<Order[]> {
   );
 }
 
+export async function getOrderById(orderId: string): Promise<Order | null> {
+  const snapshot = await getDoc(doc(db, "orders", orderId));
+
+  if (!snapshot.exists()) {
+    return null;
+  }
+
+  return { id: snapshot.id, ...snapshot.data() } as Order;
+}
+
 // Each user has a single cart document keyed by their uid.
 const cartDoc = (userId: string) => doc(db, "carts", userId);
 

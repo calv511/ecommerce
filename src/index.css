@@ -625,16 +625,23 @@ select:focus-visible {
 }
 
 .order-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  flex-wrap: wrap;
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   padding: 0.9rem 1rem;
   background: #fcfcfd;
 }
+
+.order-link {
+  color: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  text-decoration: none;
+}
+
+.order-link:hover { color: inherit; }
 
 .order-date {
   font-weight: 600;
@@ -650,3 +657,9 @@ select:focus-visible {
   font-weight: 700;
   font-size: 1.05rem;
 }
+
+.order-detail-list { list-style: none; margin: 0; padding: 0; }
+.order-detail-item { display: flex; align-items: center; gap: 1rem; padding: 1rem 0; border-bottom: 1px solid var(--border); }
+.order-detail-item img { width: 64px; height: 64px; object-fit: contain; }
+.order-detail-product { flex: 1; }
+.order-detail-total { display: flex; justify-content: space-between; margin-top: 1rem; font-weight: 700; font-size: 1.1rem; }

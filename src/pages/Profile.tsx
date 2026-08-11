@@ -230,22 +230,25 @@ const Profile: React.FC = () => {
             <ul className="order-list">
               {orders.map((order) => (
                 <li key={order.id} className="order-item">
-                  <div>
-                    <div className="order-date">
-                      {order.createdAt?.toDate().toLocaleDateString(undefined, {
-                        year: "numeric",
-                        month: "short",
-                        day: "numeric",
-                      })}
+                  <Link to={`/orders/${order.id}`} className="order-link">
+                    <div>
+                      <div className="order-date">Order {order.id}</div>
+                      <div className="order-meta">
+                        {order.createdAt?.toDate().toLocaleDateString(undefined, {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        })}
+                      </div>
+                      <div className="order-meta">
+                        {order.totalItems} item
+                        {order.totalItems === 1 ? "" : "s"}
+                      </div>
                     </div>
-                    <div className="order-meta">
-                      {order.totalItems} item
-                      {order.totalItems === 1 ? "" : "s"}
+                    <div className="order-total">
+                      ${order.totalPrice.toFixed(2)}
                     </div>
-                  </div>
-                  <div className="order-total">
-                    ${order.totalPrice.toFixed(2)}
-                  </div>
+                  </Link>
                 </li>
               ))}
             </ul>
