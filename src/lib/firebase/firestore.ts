@@ -1,4 +1,4 @@
-import type { CartItem, Order, Product } from "../../types/types";
+import type { CartItem, Order, Product, UserProfile } from "../../types/types";
 import {
   addDoc,
   collection,
@@ -103,12 +103,9 @@ export async function createUserProfile(
 }
 
 // get user profile
-export async function getUserProfile(userId: string): Promise<{
-  userId: string;
-  email: string;
-  displayName: string;
-  address: string;
-} | null> {
+export async function getUserProfile(
+  userId: string,
+): Promise<UserProfile | null> {
   const userDoc = doc(db, "users", userId);
   const snapshot = await getDoc(userDoc);
 
@@ -116,12 +113,7 @@ export async function getUserProfile(userId: string): Promise<{
     return null;
   }
 
-  return snapshot.data() as {
-    userId: string;
-    email: string;
-    displayName: string;
-    address: string;
-  };
+  return snapshot.data() as UserProfile;
 }
 
 // update user profile

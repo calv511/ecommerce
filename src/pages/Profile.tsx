@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { updateProfile, deleteUser } from "firebase/auth";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -46,13 +46,16 @@ const Profile: React.FC = () => {
     retry: false,
   });
 
-  useEffect(() => {
-    if (userProfile) {
-      setDisplayName(userProfile.displayName);
-      setEmail(userProfile.email);
-      setAddress(userProfile.address);
-    }
-  }, [userProfile]);
+  // Seed the form from the saved profile once per user. Doing this in an
+  // effect would re-run on every refetch and overwrite edits the user had
+  // already typed but not yet saved.
+  const [hydratedFor, setHydratedFor] = useState<string | null>(null);
+  if (userProfile && hydratedFor !== userProfile.userId) {
+    setHydratedFor(userProfile.userId);
+    setDisplayName(userProfile.displayName);
+    setEmail(userProfile.email);
+    setAddress(userProfile.address);
+  }
 
   // Handle profile update submission
   const handleUpdateProfile = async (e: React.FormEvent<HTMLFormElement>) => {

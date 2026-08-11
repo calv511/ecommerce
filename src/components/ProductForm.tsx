@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import type { Product } from "../types/types";
 
 export type ProductValues = Omit<Product, "id" | "rating">;
@@ -18,12 +18,16 @@ interface ProductFormProps {
   onSubmit: (product: ProductValues) => void;
 }
 
+// The caller passes a `key` tied to the product id, so the form remounts when
+// it switches products. That keeps the initial values here and stops a
+// background refetch from overwriting whatever the user is part-way through
+// typing.
 const ProductForm: React.FC<ProductFormProps> = ({ product, submitLabel, submitting, onSubmit }) => {
-  const [values, setValues] = useState<ProductValues>(emptyProduct);
-
-  useEffect(() => {
-    setValues(product ? ({ title: product.title, price: product.price, description: product.description, category: product.category, image: product.image }) : emptyProduct);
-  }, [product]);
+  const [values, setValues] = useState<ProductValues>(() =>
+    product
+      ? { title: product.title, price: product.price, description: product.description, category: product.category, image: product.image }
+      : emptyProduct,
+  );
 
   const update = (field: keyof ProductValues, value: string) => {
     setValues((current) => ({ ...current, [field]: field === "price" ? Number(value) : value }));

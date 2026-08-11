@@ -32,5 +32,3 @@ export interface UserProfile {
   displayName: string;
   address: string;
 }
-
-export type Category = string;
