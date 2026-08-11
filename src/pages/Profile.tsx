@@ -18,6 +18,7 @@ import {
   updateUserProfile,
 } from "../lib/firebase/firestore";
 import { Link } from "react-router-dom";
+import { describeAuthError } from "../lib/firebase/authErrors";
 const Profile: React.FC = () => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
@@ -76,8 +77,8 @@ const Profile: React.FC = () => {
         queryKey: ["userProfile", user.uid],
       });
       setSuccess("Profile updated succesfully");
-    } catch (error: any) {
-      setError(error.message);
+    } catch (error: unknown) {
+      setError(describeAuthError(error));
     }
   };
 
@@ -99,8 +100,8 @@ const Profile: React.FC = () => {
       ]);
       await deleteUser(user);
       setSuccess("Account deleted successfully");
-    } catch (error: any) {
-      setError(error.message);
+    } catch (error: unknown) {
+      setError(describeAuthError(error));
     }
   };
 

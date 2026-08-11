@@ -59,6 +59,9 @@ export function describeAuthError(error: unknown): string {
     case "auth/network-request-failed":
       return "Network error. Check your connection and try again.";
 
+    case "auth/requires-recent-login":
+      return "For your security, sign in again before deleting your account.";
+
     case "auth/account-exists-with-different-credential":
       return "You already have an account with that email. Sign in with your password instead.";
 
