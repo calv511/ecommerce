@@ -74,3 +74,69 @@ export async function saveCart(
 export async function deleteCart(userId: string): Promise<void> {
   await deleteDoc(cartDoc(userId));
 }
+
+// create user profile
+export async function createUserProfile(
+  userId: string,
+  email: string,
+  displayName: string,
+  address: string,
+): Promise<void> {
+  const userDoc = doc(db, "users", userId);
+  await setDoc(userDoc, {
+    userId,
+    email,
+    displayName,
+    address,
+    createdAt: serverTimestamp(),
+  });
+}
+
+// get user profile
+export async function getUserProfile(userId: string): Promise<{
+  userId: string;
+  email: string;
+  displayName: string;
+  address: string;
+} | null> {
+  const userDoc = doc(db, "users", userId);
+  const snapshot = await getDoc(userDoc);
+
+  if (!snapshot.exists()) {
+    return null;
+  }
+
+  return snapshot.data() as {
+    userId: string;
+    email: string;
+    displayName: string;
+    address: string;
+  };
+}
+
+// update user profile
+export async function updateUserProfile(
+  userId: string,
+  email: string,
+  displayName: string,
+  address: string,
+): Promise<void> {
+  const userDoc = doc(db, "users", userId);
+  await setDoc(
+    userDoc,
+    {
+      userId,
+      email,
+      displayName,
+      address,
+      updatedAt: serverTimestamp(),
+    },
+    { merge: true },
+  );
+}
+
+//delete user profile
+export async function deleteUserProfile(userId: string): Promise<void> {
+  const userDoc = doc(db, "users", userId);
+  await deleteDoc(userDoc);
+}
