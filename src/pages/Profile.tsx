@@ -12,12 +12,12 @@ import {
 import { db } from "../lib/firebase/firebase";
 import {
   deleteCart,
+  deleteUserProfile,
   getOrdersByUserId,
   getUserProfile,
   updateUserProfile,
 } from "../lib/firebase/firestore";
 import { Link } from "react-router-dom";
-
 const Profile: React.FC = () => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
@@ -94,6 +94,7 @@ const Profile: React.FC = () => {
       const ordersSnapshot = await getDocs(ordersQuery);
       await Promise.all([
         deleteCart(user.uid),
+        deleteUserProfile(user.uid),
         ...ordersSnapshot.docs.map((order) => deleteDoc(order.ref)),
       ]);
       await deleteUser(user);
