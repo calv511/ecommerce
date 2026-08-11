@@ -1,16 +1,25 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { updateProfile, deleteUser } from "firebase/auth";
 import { useQuery } from "@tanstack/react-query";
-import { collection, deleteDoc, getDocs, query, where } from "firebase/firestore";
+import {
+  collection,
+  deleteDoc,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
 import { db } from "../lib/firebase/firebase";
-import { deleteCart, getOrdersByUserId } from "../lib/firebase/firestore";
+import {
+  deleteCart,
+  getOrdersByUserId,
+  getUserProfile,
+} from "../lib/firebase/firestore";
 import { Link } from "react-router-dom";
-
 const Profile: React.FC = () => {
   const { user } = useAuth();
-  const [displayName, setDisplayName] = useState(user?.displayName || "");
-  const [email] = useState(user?.email || "");
+  const [displayName, setDisplayName] = useState("");
+  const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const {
@@ -25,6 +34,19 @@ const Profile: React.FC = () => {
     // retrying just delays the error reaching the screen.
     retry: false,
   });
+  const { data: userProfile } = useQuery({
+    queryKey: ["userProfile", user?.uid],
+    queryFn: () => getUserProfile(user!.uid),
+    enabled: Boolean(user),
+    retry: false,
+  });
+
+  useEffect(() => {
+    if (userProfile) {
+      setDisplayName(userProfile.displayName);
+      setEmail(userProfile.email);
+    }
+  }, [userProfile]);
 
   // Handle profile update submission
   const handleUpdateProfile = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -74,12 +96,12 @@ const Profile: React.FC = () => {
           <h1 className="page-title">
             {user?.isAnonymous
               ? "Guest account"
-              : user?.displayName
-                ? `Hi, ${user.displayName}`
+              : userProfile?.displayName
+                ? `Hi, ${userProfile.displayName}`
                 : "Your profile"}
           </h1>
           <p className="page-subtitle">
-            {user?.isAnonymous ? "Not signed in with an email" : email}
+            {user?.isAnonymous ? "Not signed in with an email" : userProfile?.email}
           </p>
         </div>
       </div>
@@ -88,8 +110,8 @@ const Profile: React.FC = () => {
         <div className="guest-banner">
           You're browsing as a guest. Your cart and orders are saved to this
           temporary account, and signing out or clearing your browser will lose
-          access to them for good.{" "}
-          <Link to="/register">Create an account</Link> to keep them.
+          access to them for good. <Link to="/register">Create an account</Link>{" "}
+          to keep them.
         </div>
       ) : null}
 
