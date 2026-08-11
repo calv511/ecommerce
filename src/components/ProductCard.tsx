@@ -5,11 +5,14 @@ import { useDispatch } from "react-redux";
 import type { AppDispatch } from "../app/store";
 import { addToCart } from "../features/cart/cartSlice";
 import fallbackImage from "../assets/hero.png";
+import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const ProductCard:React.FC<{product: Product}> = ({product}) => {
   const dispatch = useDispatch<AppDispatch>();
   const [isAdded, setIsAdded] = useState(false);
   const [imageSrc, setImageSrc] = useState(product.image);
+  const { user } = useAuth();
 
   useEffect(() => {
     if (!isAdded) {
@@ -60,12 +63,15 @@ const ProductCard:React.FC<{product: Product}> = ({product}) => {
 
           <div className="product-footer">
             <span className="product-price">${product.price.toFixed(2)}</span>
-            <button
-              className={`btn btn-sm ${isAdded ? "btn-success" : "btn-primary"}`}
-              onClick={handleAddToCart}
-            >
-              {isAdded ? "Added ✓" : "Add to Cart"}
-            </button>
+            <div className="d-flex gap-2 align-items-center">
+              {user && <Link className="btn btn-sm btn-outline-primary" to={`/products/${product.id}/edit`}>Edit</Link>}
+              <button
+                className={`btn btn-sm ${isAdded ? "btn-success" : "btn-primary"}`}
+                onClick={handleAddToCart}
+              >
+                {isAdded ? "Added ✓" : "Add to Cart"}
+              </button>
+            </div>
           </div>
         </div>
       </article>

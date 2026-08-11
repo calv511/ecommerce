@@ -4,9 +4,12 @@ import { useProductContext } from "../context/ProductContext";
 import { useQuery } from "@tanstack/react-query";
 import { getProducts } from "../lib/firebase/firestore";
 import { useEffect } from "react";
+import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const Home: React.FC = () => {
   const { products, dispatch, selectedCategory } = useProductContext();
+  const { user } = useAuth();
 
   const { data: allProductsData } = useQuery({
     queryKey: ["products"],
@@ -36,6 +39,11 @@ const Home: React.FC = () => {
               : "Loading products..."}
           </p>
         </div>
+        {user && (
+          <Link className="btn btn-primary" to="/products/new">
+            Add product
+          </Link>
+        )}
       </div>
 
       <div className="toolbar">

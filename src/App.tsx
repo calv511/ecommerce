@@ -12,7 +12,7 @@ import Login from "./pages/Login";
 import Logout from "./pages/Logout";
 import Navbar from "./components/Navbar/Navbar";
 import CartSync from "./features/cart/CartSync";
-
+import ProductEditor from "./pages/ProductEditor";
 const client = new QueryClient();
 
 function App() {
@@ -31,6 +31,8 @@ function App() {
                 <Route path="/Login" element={<Login />} />
                 <Route path="/Register" element={<Register />} />
                 <Route path="/Logout" element={<Logout />} />
+                <Route path="/products/new" element={<ProductEditor />} />
+                <Route path="/products/:id/edit" element={<ProductEditor />} />
               </Routes>
             </BrowserRouter>
           </AuthProvider>
