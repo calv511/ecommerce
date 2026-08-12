@@ -10,26 +10,27 @@ on:
 
 jobs:
   build: # Continuous Integration
-    runs-on: unbuntu-latest
+    runs-on: ubuntu-latest
 
     steps:
       # Step 1: Checkout the code
       - name: Checkout code
-        uses: action/checkout@v2
+        uses: actions/checkout@v4
 
       # Step 2: Setup Node.js
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: "20"
+          cache: "npm"
 
       # Step 3: Install dependencies
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       # Step 4: Run tests
       - name: Run tests
-        run: npm test
+        run: npm test -- --ci
 
       # Step 5: Build React app
       - name: Build React App
