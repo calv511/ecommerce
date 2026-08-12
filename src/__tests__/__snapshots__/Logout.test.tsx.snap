@@ -1,0 +1,24 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`matches snapshot 1`] = `
+<DocumentFragment>
+  <div
+    class="page"
+  >
+    <div
+      class="empty-state"
+    >
+      <p>
+        You've been signed out.
+      </p>
+      <a
+        class="btn btn-primary"
+        data-discover="true"
+        href="/"
+      >
+        Back to shop
+      </a>
+    </div>
+  </div>
+</DocumentFragment>
+`;
