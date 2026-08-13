@@ -103,20 +103,9 @@ jobs:
 
       # Pulls the project's production settings (framework, env vars) from
       # Vercel so the build below matches what Vercel would have produced.
-      # Diagnostic: shows which account the token authenticates as and which
-      # projects it can see. If the token's scope does not cover the project
-      # that VERCEL_PROJECT_ID names, `vercel pull` fails with a message that
-      # blames the .vercel directory instead. Never fails the job.
-      - name: Diagnose Vercel access
-        continue-on-error: true
-        run: |
-          echo "--- authenticated as ---"
-          vercel whoami --token=${{ secrets.VERCEL_TOKEN }} || true
-          echo "--- teams this token can see ---"
-          vercel teams ls --token=${{ secrets.VERCEL_TOKEN }} || true
-          echo "--- projects this token can see ---"
-          vercel project ls --token=${{ secrets.VERCEL_TOKEN }} || true
-
+      # VERCEL_TOKEN must be scoped to the team/account that owns the project,
+      # not to the project itself. A project-scoped token fails here with
+      # "User not found", because pulling settings is an account-level call.
       - name: Pull Vercel environment
         run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
 
