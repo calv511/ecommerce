@@ -25,21 +25,14 @@ jobs:
           node-version: "24"
           cache: "npm"
 
-      # Step 3: Match the npm major that generated package-lock.json.
-      # `npm ci` fails on a lockfile written by a newer npm, so an npm 10
-      # runner rejects a lockfile npm 11 produced. Pinning the major here
-      # keeps CI in step with the lockfile committed from a dev machine.
-      - name: Pin npm major
-        run: npm install -g npm@11
-
-      # Step 4: Install dependencies
+      # Step 3: Install dependencies
       - name: Install dependencies
         run: npm ci
 
-      # Step 5: Run tests
+      # Step 4: Run tests
       - name: Run tests
         run: npm test -- --ci
 
-      # Step 6: Build React app
+      # Step 5: Build React app
       - name: Build React App
         run: npm run build

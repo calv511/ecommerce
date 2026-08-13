@@ -13,7 +13,7 @@
     "test:watch": "jest --watch"
   },
   "comments": {
-    "overrides": "Vite/Rolldown and ESLint each ship a WebAssembly fallback whose @emnapi deps npm fails to record consistently in the lockfile, which breaks `npm ci` in CI after any `npm install`. Forcing one version of each collapses the duplicate tree npm mis-dedupes. Safe to remove once npm/cli#4828 is fixed."
+    "emnapi": "Vite/Rolldown and ESLint ship WebAssembly fallbacks that depend on @emnapi/*. Some npm versions omit those from package-lock.json while still requiring them, so `npm ci` fails with 'Missing: @emnapi/core from lock file' on any npm other than the one that wrote the lock. Declaring them directly forces top-level lockfile entries, and the overrides collapse the duplicate versions npm mis-dedupes. They are unused at runtime on platforms with native binaries. Safe to remove once npm/cli#4828 is fixed."
   },
   "overrides": {
     "@emnapi/core": "^1.11.3",
@@ -32,6 +32,9 @@
     "react-router-dom": "^7.18.0"
   },
   "devDependencies": {
+    "@emnapi/core": "^1.11.3",
+    "@emnapi/runtime": "^1.11.3",
+    "@emnapi/wasi-threads": "^1.2.3",
     "@eslint/js": "^10.0.1",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^7.0.1",
