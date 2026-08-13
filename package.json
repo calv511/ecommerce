@@ -12,6 +12,14 @@
     "test": "jest",
     "test:watch": "jest --watch"
   },
+  "comments": {
+    "overrides": "Vite/Rolldown and ESLint each ship a WebAssembly fallback whose @emnapi deps npm fails to record consistently in the lockfile, which breaks `npm ci` in CI after any `npm install`. Forcing one version of each collapses the duplicate tree npm mis-dedupes. Safe to remove once npm/cli#4828 is fixed."
+  },
+  "overrides": {
+    "@emnapi/core": "^1.11.3",
+    "@emnapi/runtime": "^1.11.3",
+    "@emnapi/wasi-threads": "^1.2.3"
+  },
   "dependencies": {
     "@reduxjs/toolkit": "^2.12.0",
     "@smastrom/react-rating": "^1.5.0",
