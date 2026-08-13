@@ -25,8 +25,9 @@
   "exclude": [
     "src/**/*.test.ts",
     "src/**/*.test.tsx",
-    "src/__tests__",
+    "src/**/__tests__/**",
     "src/__mocks__",
-    "src/setupTests.ts"
+    "src/setupTests.ts",
+    "src/test-utils.tsx"
   ]
 }
