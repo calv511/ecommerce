@@ -66,6 +66,29 @@ jobs:
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
     steps:
+      # Fails fast with a readable message when a secret is missing. Without
+      # this, the CLI reports "Could not retrieve Project Settings ... remove
+      # the .vercel directory", which is misleading on a runner that has no
+      # .vercel directory in the first place.
+      - name: Verify Vercel secrets are configured
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          missing=""
+          [ -n "$VERCEL_TOKEN" ] || missing="$missing VERCEL_TOKEN"
+          [ -n "$VERCEL_ORG_ID" ] || missing="$missing VERCEL_ORG_ID"
+          [ -n "$VERCEL_PROJECT_ID" ] || missing="$missing VERCEL_PROJECT_ID"
+          if [ -n "$missing" ]; then
+            echo "Missing or empty repository secret(s):$missing"
+            echo ""
+            echo "Run 'npx vercel link' in the project, then copy orgId and"
+            echo "projectId from .vercel/project.json into repository secrets."
+            exit 1
+          fi
+          # Lengths only — enough to spot an empty or truncated paste.
+          echo "VERCEL_ORG_ID length: ${#VERCEL_ORG_ID}"
+          echo "VERCEL_PROJECT_ID length: ${#VERCEL_PROJECT_ID}"
+
       - name: Checkout code
         uses: actions/checkout@v4
 
